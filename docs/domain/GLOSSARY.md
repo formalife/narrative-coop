@@ -1,6 +1,6 @@
 # DOMAIN GLOSSARY v0.3
 
-**Status:** PROPOSED terminology aligned to Architecture Baseline v0.3.
+**Status:** CANONICAL for Architecture Baseline v0.3. May be extended during contract design without changing accepted semantics.
 
 **Scenario** — authored reusable game configuration/content independent of a specific playthrough.
 
