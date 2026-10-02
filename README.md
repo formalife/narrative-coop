@@ -10,14 +10,14 @@ The distinguishing mechanic is **Asymmetric Agency + Causal Merge**.
 
 ## Current phase
 
-**Phase 0 — Architecture Discovery**
+**Phase 0 architecture accepted — Contract & Domain Model Design**
 
 No production implementation should begin until the governing architecture is sufficiently defined and accepted.
 
 Start with:
 
 - [PROJECT_STATE.md](PROJECT_STATE.md) — current phase, active baseline, open work and next step.
-- [Architecture Baseline v0.1](docs/architecture/ARCHITECTURE_BASELINE_v0.1.md) — current architecture proposal.
+- [Architecture Baseline v0.3](docs/architecture/ARCHITECTURE_BASELINE_v0.3.md) — accepted Phase-0 architecture.
 - [Project Genesis](docs/product/PROJECT_GENESIS.md) — founding specification and original requirements.
 - [Domain Glossary](docs/domain/GLOSSARY.md) — canonical terminology.
 - [ADR registry](docs/adr/README.md) — structural decisions and status.
@@ -44,4 +44,4 @@ Accepted structural decisions must be captured in an ADR and reflected in `PROJE
 
 ## Repository status
 
-This repository currently contains **architecture and project knowledge only**. Application code, infrastructure and implementation skeletons intentionally remain unstarted until the architecture discovery phase is sufficiently resolved.
+The Phase-0 architecture is accepted. The repository is now moving into **contract and domain/data model design**. Application code and infrastructure remain intentionally unstarted until those contracts are sufficiently stable.
