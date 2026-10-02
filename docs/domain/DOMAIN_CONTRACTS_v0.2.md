@@ -292,7 +292,43 @@ CommandResult
 
 ---
 
-# 8. CanonicalTransitionRecord
+# 8. CommandProcessingRecord
+
+Durable application/idempotency state for resumable command execution.
+
+```
+CommandProcessingRecord
+  command_key
+  semantic_payload_hash
+
+  processing_status:
+    RECEIVED
+    ACCEPTED_PENDING
+    PROCESSING
+    COMPLETED
+    REJECTED
+    FAILED_RETRYABLE
+    FAILED_TERMINAL
+
+  optional stored_command_result
+  optional frozen_input_set_hash
+  optional transition_key
+
+  first_received_at
+  last_updated_at
+```
+
+## Rules
+
+- idempotency lookup occurs before side effects;
+- a command that freezes pending input but crashes before canonical commit remains resumable;
+- retry with the same CommandKey continues/reports the same logical operation rather than creating another freeze/transition;
+- CommandResult is final only when the relevant command semantics say so;
+- command processing state is operational/application state, not canonical world state.
+
+---
+
+# 9. CanonicalTransitionRecord
 
 Every committed canonical event batch belongs to exactly one CanonicalTransitionRecord.
 
@@ -336,7 +372,7 @@ Exact registry can expand without changing the rule that every canonical batch h
 
 ---
 
-# 9. Stream revision convention
+# 10. Stream revision convention
 
 This convention is frozen by Domain Contracts v0.2.
 
@@ -356,7 +392,7 @@ resulting_revision = N + K
 
 ---
 
-# 10. ResolutionWindow — canonical instance
+# 11. ResolutionWindow — canonical instance
 
 ResolutionWindow represents canonical progression state, not operational resolver phases.
 
@@ -417,7 +453,7 @@ INTERRUPTED
 
 ---
 
-# 11. WindowInputGate — authoritative pending input state
+# 12. WindowInputGate — authoritative pending input state
 
 Operational/authoritative pending state outside canonical world history.
 
@@ -459,7 +495,7 @@ SlotInputState
 
 ---
 
-# 12. FrozenInputSet
+# 13. FrozenInputSet
 
 ```
 FrozenInputSet
@@ -479,7 +515,7 @@ This artifact is immutable once created and is referenced by ResolutionRecord.
 
 ---
 
-# 13. ResolutionAttempt — operational/audit
+# 14. ResolutionAttempt — operational/audit
 
 ```
 ResolutionAttempt
@@ -505,7 +541,7 @@ A crash can leave an attempt aborted/retryable while the canonical Window is sti
 
 ---
 
-# 14. ActionSlot
+# 15. ActionSlot
 
 ```
 ActionSlot
@@ -546,7 +582,7 @@ SECRET_SIMULTANEOUS requires private submission content until scenario policy re
 
 ---
 
-# 15. ActionSubmission
+# 16. ActionSubmission
 
 ```
 ActionSubmission
@@ -584,7 +620,7 @@ ActionSubmission
 
 ---
 
-# 16. ActionDefinition
+# 17. ActionDefinition
 
 Compiled immutable bundle definition.
 
@@ -638,7 +674,7 @@ Examples:
 
 ---
 
-# 17. ExpandedAction
+# 18. ExpandedAction
 
 ```
 ExpandedAction
@@ -674,7 +710,7 @@ No ambient input.
 
 ---
 
-# 18. AdmissionResult
+# 19. AdmissionResult
 
 ```
 AdmissionResult
@@ -697,7 +733,7 @@ A world condition that could be changed by another action in the same window MUS
 
 ---
 
-# 19. ResolutionRequirement
+# 20. ResolutionRequirement
 
 Logical contract:
 
@@ -718,7 +754,7 @@ Exact requirement type registry remains open.
 
 ---
 
-# 20. ActionOutcome
+# 21. ActionOutcome
 
 ```
 ActionOutcome
@@ -740,7 +776,7 @@ Every ADMITTED action has exactly one ActionOutcome.
 
 ---
 
-# 21. Claim
+# 22. Claim
 
 ```
 Claim
@@ -774,7 +810,7 @@ Rules:
 
 ---
 
-# 22. InteractionEdge and InteractionGroup
+# 23. InteractionEdge and InteractionGroup
 
 ```
 InteractionEdge
@@ -812,7 +848,7 @@ Independent groups commute at final-state level.
 
 ---
 
-# 23. NamedRandomDraw
+# 24. NamedRandomDraw
 
 ```
 NamedRandomDraw
@@ -858,7 +894,7 @@ Same `draw_key` reused with different declared context/parameters in one transit
 
 ---
 
-# 24. ActionResolutionResult
+# 25. ActionResolutionResult
 
 Action-specific deterministic result before generic progression closure.
 
@@ -893,7 +929,7 @@ This is not yet the complete canonical transition because scheduler/progression 
 
 ---
 
-# 25. BoundaryOrderingPolicy
+# 26. BoundaryOrderingPolicy
 
 Every ResolutionWindow definition declares how due logical scheduled effects at the frontier interact with its action resolution.
 
@@ -914,7 +950,7 @@ INTERRUPT_WINDOW
 
 ---
 
-# 26. TransitionPlan
+# 27. TransitionPlan
 
 Complete pre-commit canonical plan.
 
@@ -952,7 +988,7 @@ TransitionPlan
 
 ---
 
-# 27. ResolutionRecord
+# 28. ResolutionRecord
 
 Resolution-specific immutable evidence referenced by a WINDOW_RESOLUTION CanonicalTransitionRecord.
 
@@ -983,7 +1019,7 @@ Commit revisions/hashes belong primarily to CanonicalTransitionRecord, avoiding 
 
 ---
 
-# 28. CanonicalEventContent
+# 29. CanonicalEventContent
 
 ```
 CanonicalEventContent
@@ -1023,7 +1059,7 @@ Operational DB IDs are not semantic identity.
 
 ---
 
-# 29. EventRecordMetadata
+# 30. EventRecordMetadata
 
 ```
 EventRecordMetadata
@@ -1037,7 +1073,7 @@ Excluded from canonical event hash/equality.
 
 ---
 
-# 30. CanonicalStateContent and SessionStateProjection
+# 31. CanonicalStateContent and SessionStateProjection
 
 ## CanonicalStateContent
 
@@ -1095,7 +1131,7 @@ The hash field itself is not part of CanonicalStateContent.
 
 ---
 
-# 31. State Mutation IR v0.2
+# 32. State Mutation IR v0.2
 
 ```
 Mutation =
@@ -1155,7 +1191,7 @@ No arbitrary path mutation.
 
 ---
 
-# 32. PredicateDefinition and PropositionValue
+# 33. PredicateDefinition and PropositionValue
 
 ## PredicateDefinition
 
@@ -1192,7 +1228,7 @@ This supports propositions involving runtime-created entities/values without pre
 
 ---
 
-# 33. TemporalQualifier
+# 34. TemporalQualifier
 
 Optional explicit proposition semantics:
 
@@ -1209,7 +1245,7 @@ A character acquiring knowledge at tick 20 is distinct from the proposition bein
 
 ---
 
-# 34. FactRecord
+# 35. FactRecord
 
 ```
 FactRecord
@@ -1229,7 +1265,7 @@ Corrections are explicit compensating/correction events.
 
 ---
 
-# 35. ObservationRecord
+# 36. ObservationRecord
 
 ```
 ObservationRecord
@@ -1250,7 +1286,7 @@ Observation alone does not automatically grant KnowledgeRecord.
 
 ---
 
-# 36. KnowledgeRecord
+# 37. KnowledgeRecord
 
 ```
 KnowledgeRecord
@@ -1271,7 +1307,7 @@ Unknown = absence of relevant valid knowledge.
 
 ---
 
-# 37. BeliefRecord and SuspicionRecord
+# 38. BeliefRecord and SuspicionRecord
 
 ```
 BeliefRecord
@@ -1305,7 +1341,7 @@ Belief/Suspicion do not imply Fact.
 
 ---
 
-# 38. CommunicationClaim
+# 39. CommunicationClaim
 
 ```
 CommunicationClaim
@@ -1328,7 +1364,7 @@ Actual reception is represented by ObservationRecord and subsequent epistemic ev
 
 ---
 
-# 39. EvidenceRelation
+# 40. EvidenceRelation
 
 ```
 EvidenceRelation
@@ -1346,7 +1382,7 @@ No automatic Bayesian/logical inference is implied.
 
 ---
 
-# 40. ScheduledEffect
+# 41. ScheduledEffect
 
 ```
 ScheduledEffect
@@ -1384,7 +1420,7 @@ ScheduledEffect
 
 ---
 
-# 41. DecisionPointDefinition
+# 42. DecisionPointDefinition
 
 Compiled definition:
 
@@ -1403,7 +1439,7 @@ DecisionPointDefinition
 
 ---
 
-# 42. DecisionPointInstance
+# 43. DecisionPointInstance
 
 Canonical runtime progression instance.
 
@@ -1430,7 +1466,7 @@ Instance identity is deterministic or created as canonical transition output and
 
 ---
 
-# 43. ProgressionEvaluation
+# 44. ProgressionEvaluation
 
 ```
 ProgressionEvaluation
@@ -1475,7 +1511,7 @@ No implicit "first in array" fallback.
 
 ---
 
-# 44. PlayerInteractionView
+# 45. PlayerInteractionView
 
 Deterministic audience-safe projection produced before Narrative Direction.
 
@@ -1487,6 +1523,9 @@ PlayerInteractionView
 
   state_revision
 
+  optional window_input_gate_hash
+  optional own_slot_input_revision
+
   visible_world_projection
   visible_epistemic_projection
 
@@ -1494,6 +1533,8 @@ PlayerInteractionView
   optional resolution_window_ref
 
   interaction_surface
+  own_pending_input_summary
+  allowed_shared_readiness_status
 
   view_schema_version
 ```
@@ -1512,7 +1553,8 @@ InteractionSurface
 
 ## Invariants
 
-- derived deterministically from canonical state + participant permissions/epistemics;
+- derived deterministically from canonical state + authorized pending-input state + participant permissions/epistemics;
+- PlayerViewKey changes when mechanically relevant authorized pending-input state changes even if StreamRevision does not;
 - contains no information unauthorized for participant;
 - Narrative Direction cannot add/remove legal mechanics from InteractionSurface;
 - SECRET_SIMULTANEOUS never exposes other participant pending submission content.
@@ -1521,7 +1563,7 @@ PlayerViewKey is a content hash over the deterministic view.
 
 ---
 
-# 45. PresentationPlan
+# 46. PresentationPlan
 
 Narrative/presentation artifact over a PlayerInteractionView.
 
@@ -1550,7 +1592,7 @@ Mechanical affordances come from PlayerInteractionView.InteractionSurface.
 
 ---
 
-# 46. PresentationRecord
+# 47. PresentationRecord
 
 ```
 PresentationRecord
@@ -1568,7 +1610,11 @@ PresentationRecord
   output_hash
 
   generation_status
-  delivery_status
+  delivery_status:
+    PENDING
+    DELIVERED
+    FAILED
+    SUPERSEDED
 
   generated_at
   optional delivered_at
@@ -1578,7 +1624,7 @@ Exact delivered payload may contain structured text/media/UI presentation metada
 
 ---
 
-# 47. TransactionalOutboxItem
+# 48. TransactionalOutboxItem
 
 ```
 TransactionalOutboxItem
@@ -1601,8 +1647,9 @@ TransactionalOutboxItem
 
 For BUILD_PRESENTATION:
 
-- payload references state_revision/audience;
+- payload references state_revision/audience/player_view_key;
 - execution_context contains immutable PresentationGenerationContext.
+- delivery performs a DeliveryGuard check: if the targeted PlayerInteractionView is no longer applicable/current for that audience, the presentation is marked SUPERSEDED and is not delivered as current gameplay output.
 
 ## Invariants
 
@@ -1614,7 +1661,7 @@ For BUILD_PRESENTATION:
 
 ---
 
-# 48. Canonical commit contract
+# 49. Canonical commit contract
 
 For a state-changing frontier operation:
 
@@ -1641,7 +1688,7 @@ A revision mismatch aborts the uncommitted plan.
 
 ---
 
-# 49. Session lifecycle
+# 50. Session lifecycle
 
 ```
 CREATED
@@ -1670,7 +1717,7 @@ Commercial/account lifecycle remains outside this state machine.
 
 ---
 
-# 50. Cross-contract invariants
+# 51. Cross-contract invariants
 
 ## Authority
 
@@ -1739,10 +1786,12 @@ Commercial/account lifecycle remains outside this state machine.
 39. Presentation task retry preserves PresentationGenerationContext.
 40. Delivered output is recoverable via PresentationRecord.
 41. Human ActionSubmission may retain source PlayerView/Presentation provenance.
+42. A stale presentation task cannot deliver itself as the current interaction after its PlayerInteractionView has been superseded.
+43. A command crash after input freeze can resume from CommandProcessingRecord/FrozenInputSet without creating a second logical command or transition.
 
 ---
 
-# 51. Red-team outcome against original 18 cases
+# 52. Red-team outcome against original 18 cases
 
 v0.2 is designed to resolve the v0.1 failures as follows:
 
@@ -1767,7 +1816,7 @@ v0.2 is designed to resolve the v0.1 failures as follows:
 
 ---
 
-# 52. Deliberately open details
+# 53. Deliberately open details
 
 Still not frozen:
 
@@ -1788,7 +1837,7 @@ Still not frozen:
 
 ---
 
-# 53. Acceptance gate
+# 54. Acceptance gate
 
 Before DOMAIN_CONTRACTS v0.2 can be ACCEPTED:
 
