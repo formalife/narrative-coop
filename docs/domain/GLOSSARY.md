@@ -1,111 +1,121 @@
-# DOMAIN GLOSSARY v0.2
+# DOMAIN GLOSSARY v0.3
 
-**Status:** PROPOSED terminology aligned to Architecture Baseline v0.2.
+**Status:** PROPOSED terminology aligned to Architecture Baseline v0.3.
 
 **Scenario** — authored reusable game configuration/content independent of a specific playthrough.
 
 **Scenario Version** — immutable published version of a Scenario.
 
-**CompiledScenarioBundle** — immutable, validated, content-addressed runtime representation of one Scenario Version, including schemas/rules/version manifest.
+**CompiledScenarioBundle** — immutable, validated, content-addressed runtime representation of a Scenario Version.
 
-**Session** — one concrete playthrough shared by participants; proposed primary runtime consistency boundary.
+**Session** — one concrete playthrough; proposed canonical consistency boundary.
+
+**Single Canonical Frontier** — invariant that only one canonical state-changing progression/resolution operation advances a Session at a time.
 
 **Participant** — human or synthetic controller participating in a Session.
 
+**Principal** — server-authoritative identity/system authority attached to an EngineCommand.
+
 **Character** — in-world Entity controlled by a Participant or engine.
 
-**Role** — scenario-defined set of permissions, capabilities, knowledge scope, resources, authority, objectives and restrictions associated with a Character/Participant.
+**Role** — scenario-defined permissions, capabilities, knowledge scope, resources, authority, objectives and restrictions.
+
+**EngineCommand** — idempotent authoritative request/input to Session application logic; a command is not itself a canonical occurrence.
+
+**Command Journal** — durable record used to deduplicate/retry command processing.
+
+**Action Slot** — window-defined opportunity/requirement for one actor/participant action.
+
+**ActionSubmission** — durable pending player input for an ActionSlot; not canonical world truth until selected and resolved.
+
+**ActionDefinition** — immutable scenario authority defining action input schema, constraints, claims, timing and resolver/effect references.
+
+**ExpandedAction** — deterministic server-derived resolution input created from a selected ActionSubmission, ActionDefinition and frozen state.
+
+**AdmissionResult** — result of validating whether an ActionSubmission enters world resolution.
+
+**ActionOutcome** — in-world result of one admitted ExpandedAction.
+
+**Claim** — engine-derived contention/access/demand description over a target/scope.
+
+**Interaction Graph** — representation of meaningful interactions among admitted actions.
+
+**Interaction Group/Component** — connected set of actions that must be resolved jointly, including aggregate capacity effects.
+
+**Resolution Strategy** — bounded versioned algorithm for a class of interactions.
+
+**ResolutionPlan** — deterministic pre-commit plan containing outcomes, random evidence and canonical transitions.
+
+**ResolutionRecord** — immutable audit/debug record of selected inputs, pinned versions, resolution evidence and results.
 
 **Entity** — uniquely identified in-world thing composed from typed Components.
 
-**Component** — typed, versioned state attached to an Entity.
+**Component** — typed versioned state attached to an Entity.
 
-**SessionState** — rebuildable current-state projection for a Session at a known stream revision/hash.
+**SessionState** — synchronous rebuildable current projection at a known stream revision/hash.
 
-**Canonical Event Stream** — append-only ordered history of committed canonical Domain Events for one Session.
+**Canonical Event Stream** — append-only ordered historical source for canonical Session state/progression.
 
-**Projection** — read/current-state model derived from canonical events; not an independent historical source of truth.
+**CanonicalEventContent** — deterministic hash/replay-relevant semantic event content.
 
-**ResolutionWindow** — bounded collection of action slots/submissions resolved under one temporal/resolution policy.
+**EventRecordMetadata** — operational event persistence metadata such as database id/recorded timestamp, excluded from semantic replay equality.
 
-**Action Slot** — scenario/window-defined opportunity or requirement for a Participant/actor to submit an action.
+**Domain Event** — immutable canonical semantic occurrence.
 
-**ActionSubmission** — minimal client/input request containing action type and allowed parameters/targets; it does not contain authoritative claims/effects.
+**Event Family** — finite engine-level event category.
 
-**ActionDefinition** — immutable scenario definition that owns schemas, constraints, claim derivation, timing and resolver/effect references for an action type.
+**Event Code** — precise core/scenario semantic event identifier.
 
-**ExpandedAction** — server-derived, deterministic resolution input produced from an ActionSubmission + ActionDefinition + frozen base state.
+**State Mutation IR** — typed internal representation of validated canonical projection mutations.
 
-**Action Type** — scenario/core semantic identifier selecting an ActionDefinition.
+**Scenario Progression** — deterministic canonical subsystem that activates DecisionPoints/windows/progression/ending state.
 
-**Action Family / Action Tag** — optional classification for authoring/UI/analytics; does not dispatch canonical mechanics.
+**Narrative Direction** — presentation-only selection/emphasis over already-authorized player-safe content.
 
-**AdmissionResult** — result of validating whether an ActionSubmission is allowed to enter world resolution.
+**PresentationPlan** — structured player-safe presentation input to realization.
 
-**ActionOutcome** — canonical in-world result of resolving an admitted action.
+**Narrative Realization** — conversion of PresentationPlan into prose/dialogue/media; not canonical world truth.
 
-**Claim** — contention-relevant access/demand declaration derived by the engine, with a target, mode and optional quantity/time scope.
+**PresentationRecord** — immutable record of what was actually delivered to a player, retained because it can causally influence later human choices.
 
-**Interaction Graph** — graph of admitted actions connected by typed interaction edges such as contention, exclusion, interference, dependency, complementarity or order sensitivity.
+**Proposition** — structured referencable statement with predicate/arguments/value.
 
-**Resolution Strategy** — versioned bounded engine algorithm used to resolve a class of interacting actions.
+**Fact** — explicit canonical truth assertion/provenance/validity record for a Proposition when epistemic reference is needed.
 
-**ResolutionPlan** — deterministic pre-commit result containing ActionOutcomes, random evidence and intended canonical events/mutations.
+**ObservationRecord** — record that a Character perceived an occurrence/evidence/proposition.
 
-**ResolutionRecord** — immutable audit/debug record of resolver inputs, versions, rules, random draws, plan and result.
+**KnowledgeRecord** — deterministic granted knowledge of a Proposition with provenance.
 
-**Domain Event** — immutable canonical semantic record that an occurrence happened in the Session.
+**BeliefRecord** — Character belief about a Proposition/value, independent from canonical truth.
 
-**Event Family** — finite engine-level classification of a Domain Event.
+**SuspicionRecord** — tentative weaker attitude toward a Proposition.
 
-**Event Code** — precise core or scenario-specific semantic identifier of a Domain Event.
+**CommunicationClaim** — Proposition/value asserted by a speaker to a recipient/channel; does not become truth by being stated.
 
-**Event Batch** — ordered atomic collection of Domain Events committed by one resolution/engine operation.
+**Secret** — visibility/access/narrative classification over information/evidence; not its own truth category.
 
-**State Mutation IR** — small typed internal intermediate representation describing validated projection mutations associated with canonical events.
+**Evidence** — canonical world object/relation that supports or contradicts a Proposition.
 
-**Fact** — canonical truth assertion about a Proposition, optionally time-bounded and provenance-linked.
+**Addressability** — whether an actor may refer to/select/control a target for an ActionDefinition, independently from raw target existence.
 
-**Proposition** — structured scenario-defined statement that can be true/false/valued and referenced by epistemic records.
+**Logical Time** — deterministic in-world integer/tick time used by mechanics.
 
-**Observation** — explicit record that a Character perceived an occurrence, proposition or evidence.
+**Wall Clock** — real-world time used for UX/deadline triggers; operational rather than replay ordering.
 
-**Knowledge** — engine-established epistemic stance indicating that a Character knows a Proposition according to scenario rules.
+**Stream Revision** — authoritative technical order of canonical events.
 
-**Belief** — Character-specific stance treating a Proposition as plausible/true without canonical truth equivalence.
+**Scheduler** — deterministic canonical system for logical delayed consequences.
 
-**Suspicion** — weaker/uncertain Character-specific stance toward a Proposition.
+**Named Random Draw** — seeded/versioned draw identified by stable key so unrelated random calls cannot perturb it.
 
-**Communication Claim** — Proposition asserted by a speaker to a recipient/channel; the assertion does not make it Fact.
+**Canonical Serialization** — deterministic versioned representation used before hashing.
 
-**Secret** — visibility/access or narrative classification over information/evidence; not a separate category of truth.
+**Transactional Outbox** — durable records inserted in the same transaction as canonical commit so required post-commit work can be retried idempotently.
 
-**Evidence** — canonical world Entity/relation that can support or contradict Propositions.
+**State Replay** — rebuild historical SessionState from pinned initial state + canonical events.
 
-**Addressability** — whether an actor is permitted to reference/select/control a target for a particular ActionDefinition; distinct from target existence.
+**Resolver Verification Replay** — re-execute historical resolution under pinned runtime/bundle to compare semantic output.
 
-**Narrative Thread** — stateful narrative concern such as a threat, promise, mystery or unresolved conflict.
+**Forensic Replay** — reconstruct/investigate a historical Session using stored resolution/random/event/presentation evidence when old executable runtime is unavailable.
 
-**Logical Time** — in-world narrative time used by rules/scheduler.
-
-**Wall Clock** — real-world time used for UX/deadlines/infrastructure triggers; not historical replay ordering.
-
-**Engine Order / Stream Revision** — authoritative total technical ordering of canonical Session events.
-
-**Scheduler** — canonical mechanism for logical delayed consequences.
-
-**Named Random Draw** — versioned seeded random operation identified by a stable draw key so unrelated draws do not perturb each other.
-
-**Simulation Layer** — determines canonical world outcomes.
-
-**Narrative Director** — deterministic/versioned layer selecting what scene/information/decision structure should be presented and when.
-
-**PresentationPlan** — player-safe structured output from the Narrative Director given to realization/UI.
-
-**Narrative Realization** — noncanonical conversion of a PresentationPlan into prose/dialogue/media presentation.
-
-**State Replay** — reconstruction of SessionState from pinned initial state/bundle + canonical event stream.
-
-**Resolver Replay** — re-execution of historical resolution inputs/versions/random evidence to verify the generated event batch.
-
-**Canonical Serialization** — versioned deterministic representation of state/events used before hashing.
+**Narrative Replay** — display exact historical PresentationRecords rather than regenerating output.
