@@ -69,6 +69,11 @@ Historical review chain:
 
 Translate the accepted architecture into explicit contracts and invariants before writing production code.
 
+Current contract proposal:
+- `docs/domain/DOMAIN_CONTRACTS_v0.1.md` — PROPOSED
+
+The next checkpoint is a red-team of these contracts against synthetic causal-merge/epistemic/temporal/reliability cases. Do not proceed to SQL schema until the contract boundary is sufficiently stable.
+
 Priority order:
 
 1. Define concrete domain contracts:
