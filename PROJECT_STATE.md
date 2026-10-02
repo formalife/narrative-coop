@@ -179,8 +179,8 @@ Historical proposals:
 - `docs/persistence/RED_TEAM_PERSISTENCE_MODEL_v0.2.md`
 
 Current proposal:
-- `docs/persistence/PERSISTENCE_MODEL_v0.3.md` — PROPOSED
-- `docs/persistence/RED_TEAM_PERSISTENCE_MODEL_v0.3.md` — READY FOR ACCEPTANCE
+- `docs/persistence/PERSISTENCE_MODEL_v0.3.md` — ACCEPTED
+- `docs/persistence/RED_TEAM_PERSISTENCE_MODEL_v0.3.md` — PASS
 
 v0.3 adds:
 - global DB lock hierarchy;
@@ -194,6 +194,6 @@ v0.3 adds:
 - event-index metadata repair semantics;
 - minimal session_runtime without duplicated canonical convenience fields.
 
-Persistence v0.3 is technically ready for acceptance.
+Persistence v0.3 was explicitly ACCEPTED on 2026-10-02.
 
-Do NOT create PostgreSQL migrations or implementation code until persistence v0.3 is explicitly accepted.
+Concrete PostgreSQL schema design is now authorized. Actual migration files remain blocked until the schema proposal is red-teamed and accepted.
