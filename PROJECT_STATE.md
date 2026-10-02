@@ -115,8 +115,8 @@ Priority order:
 2. ADR-015 Guest Identity and Session Participation — ACCEPTED.
 3. ADR-016 Supabase PostgreSQL / Auth / Realtime Platform — ACCEPTED.
 4. ADR-017 Persistent API / Worker Runtime and Durable Outbox — ACCEPTED.
-5. Design/red-team the additive `access` schema.
-6. Run Supabase/Railway connectivity, TLS, JWT, custom-role and Realtime integration spikes.
+5. Access Schema v0.3 — PROPOSED / READY FOR ACCEPTANCE.
+6. After acceptance, run Supabase/Railway connectivity, TLS, JWT, custom-role and Realtime integration spikes.
 7. Only after those gates generate executable `db/migrations/`.
 8. Create implementation monorepo skeleton.
 9. Build resolver/state-transition/property-based/replay test harness.
@@ -254,3 +254,35 @@ current Supabase Edge Functions receive broad default project DB/secret credenti
 No ACCEPTED ADR-001..014 or accepted domain/persistence/schema decision requires supersession.
 
 Implementation Platform v0.3 and ADR-015..017 were explicitly ACCEPTED on 2026-10-02. Access-schema design is now authorized; executable migrations remain blocked until access schema and deployment spikes pass.
+
+
+## Access schema checkpoint
+
+Accepted prerequisites:
+- Architecture Baseline v0.4 — ACCEPTED
+- ADR-015 — ACCEPTED
+- Implementation Platform v0.3 — ACCEPTED
+- PostgreSQL Schema v0.5 — ACCEPTED
+
+Review chain:
+- `docs/persistence/ACCESS_SCHEMA_v0.1.md` — NOT ACCEPTED
+- `docs/persistence/POSTMORTEM_ACCESS_SCHEMA_v0.1.md`
+- `docs/persistence/ACCESS_SCHEMA_v0.2.md` — NOT ACCEPTED
+- `docs/persistence/POSTMORTEM_ACCESS_SCHEMA_v0.2.md`
+- `docs/persistence/ACCESS_SCHEMA_v0.3.md` — PROPOSED
+- `docs/persistence/RED_TEAM_ACCESS_SCHEMA_v0.3.md` — READY FOR ACCEPTANCE
+
+Key v0.3 decisions:
+- AuthSubject remains noncanonical.
+- one lifetime binding per Session/AuthSubject in MVP.
+- one lifetime binding per Session/ParticipantRef in MVP.
+- no access recovery/rebind in MVP schema.
+- authorized private/write transactions revalidate and lock ACTIVE binding.
+- FOR SHARE authorization locks linearize against revocation.
+- invite creator/claim references access binding rather than duplicating Participant/transition data.
+- invite plaintext is never persisted.
+- invite expiry is evaluated at a defined locked wall-clock point.
+- SQL FKs prove identity/context; semantic validators prove ParticipantBound/slot meaning.
+- Realtime revocation is not treated as immediate security authority because authorization may be cached; Realtime payload remains content-free invalidation.
+
+No executable migrations until Access Schema v0.3 is explicitly accepted and deployment integration spikes pass.
