@@ -1,8 +1,8 @@
 # DOMAIN CONTRACTS v0.2
 
-**Status:** PROPOSED  
+**Status:** ACCEPTED  
 **Date:** 2026-10-02  
-**Supersedes as working proposal:** DOMAIN_CONTRACTS_v0.1  
+**Accepted contract baseline; supersedes:** DOMAIN_CONTRACTS_v0.1  
 **Governing architecture:** Architecture Baseline v0.3 — ACCEPTED  
 **Purpose:** implementation-ready logical contracts before domain/data model and SQL schema.
 
@@ -1839,7 +1839,7 @@ Still not frozen:
 
 # 54. Acceptance gate
 
-Before DOMAIN_CONTRACTS v0.2 can be ACCEPTED:
+Acceptance review completed against the following gate:
 
 1. verify it does not conflict with ADR-001..ADR-014;
 2. verify the 18 synthetic cases are contractually unambiguous;
@@ -1853,4 +1853,19 @@ Before DOMAIN_CONTRACTS v0.2 can be ACCEPTED:
    - progression non-convergence;
 4. decide whether any remaining open item is implementation-blocking.
 
-Only after contract acceptance proceed to `DOMAIN_MODEL_v0.1.md` and SQL schema proposal.
+Accepted on 2026-10-02. Proceed to `DOMAIN_MODEL_v0.1.md`. SQL schema remains blocked until Domain Model review.
+
+
+---
+
+# 55. Acceptance record
+
+Domain Contracts v0.2 were explicitly accepted on 2026-10-02.
+
+Acceptance evidence:
+- `RED_TEAM_DOMAIN_CONTRACTS_v0.2.md`
+- `POSTMORTEM_DOMAIN_CONTRACTS_v0.1.md`
+
+These contracts are now binding implementation constraints under Architecture Baseline v0.3 and ADR-001 through ADR-014.
+
+A later design that conflicts with these contracts must be identified as a contract change and cannot be silently treated as a persistence/implementation detail.
