@@ -10,44 +10,43 @@ This directory is the canonical registry for structural technical decisions.
 - **DEPRECATED** — historical but no longer recommended/current.
 - **REJECTED** — explicitly considered and not selected.
 
-A proposal in ChatGPT or an Architecture Baseline does not become binding until its decision is explicitly accepted and recorded.
+## Accepted Phase-0 decisions
+
+| ID | Topic | Status |
+|---|---|---|
+| [ADR-001](ADR-001-selective-event-sourcing-scope.md) | Selective Event Sourcing scope | ACCEPTED |
+| [ADR-002](ADR-002-session-stream-single-canonical-frontier.md) | Session stream and Single Canonical Frontier | ACCEPTED |
+| [ADR-003](ADR-003-postgresql-persistence-baseline.md) | PostgreSQL persistence baseline | ACCEPTED |
+| [ADR-004](ADR-004-componentized-entity-model.md) | Componentized Entity Model | ACCEPTED |
+| [ADR-005](ADR-005-command-action-authority-boundary.md) | EngineCommand and ActionSubmission authority boundary | ACCEPTED |
+| [ADR-006](ADR-006-claims-interaction-deterministic-resolver.md) | Claims, Interaction Graph and deterministic resolver | ACCEPTED |
+| [ADR-007](ADR-007-semantic-events-mutation-ir.md) | Semantic Domain Event and State Mutation IR | ACCEPTED |
+| [ADR-008](ADR-008-epistemic-model.md) | Epistemic model | ACCEPTED |
+| [ADR-009](ADR-009-temporal-scheduler-model.md) | Temporal and Scheduler model | ACCEPTED |
+| [ADR-010](ADR-010-compiled-scenario-bundle-pure-rules.md) | Compiled Scenario Bundle and pure rules | ACCEPTED |
+| [ADR-011](ADR-011-versioning-hashing-replay.md) | Versioning, canonical serialization, hashing and replay | ACCEPTED |
+| [ADR-012](ADR-012-scenario-progression-narrative-separation.md) | Scenario Progression vs Narrative Direction/Realization | ACCEPTED |
+| [ADR-013](ADR-013-logical-cqrs-critical-projection-outbox.md) | Logical CQRS, critical projection and Transactional Outbox | ACCEPTED |
+| [ADR-014](ADR-014-llm-runtime-boundaries.md) | LLM runtime boundaries | ACCEPTED |
+| ADR-015 | Guest identity / participation baseline | PROPOSED |
+
+## Governing baseline
+
+Accepted Phase-0 architecture:
+- `../architecture/ARCHITECTURE_BASELINE_v0.3.md`
+
+Acceptance record:
+- `../architecture/PHASE_0_ACCEPTANCE.md`
 
 ## Required ADR structure
 
 Use [ADR-TEMPLATE.md](ADR-TEMPLATE.md).
 
-Each ADR covers:
+Every structural change to an ACCEPTED decision requires:
+1. an explicit proposed ADR;
+2. alternatives/consequences/risks;
+3. explicit acceptance;
+4. superseding status on the old ADR where applicable;
+5. update of the architecture baseline and PROJECT_STATE.
 
-1. Context
-2. Decision
-3. Alternatives considered
-4. Why rejected
-5. Consequences
-6. Risks
-7. Revisit conditions
-
-## Current candidate ADR set — Baseline v0.3
-
-All candidates remain **PROPOSED**.
-
-| ID | Topic | Status |
-|---|---|---|
-| ADR-001 | Selective Event Sourcing scope | PROPOSED |
-| ADR-002 | Session stream and Single Canonical Frontier | PROPOSED |
-| ADR-003 | PostgreSQL persistence baseline | PROPOSED |
-| ADR-004 | Componentized Entity Model | PROPOSED |
-| ADR-005 | EngineCommand and ActionSubmission authority boundary | PROPOSED |
-| ADR-006 | Claims, Interaction Graph and deterministic resolver | PROPOSED |
-| ADR-007 | Semantic Domain Event and State Mutation IR | PROPOSED |
-| ADR-008 | Epistemic model | PROPOSED |
-| ADR-009 | Temporal and Scheduler model | PROPOSED |
-| ADR-010 | Compiled Scenario Bundle and pure rules | PROPOSED |
-| ADR-011 | Versioning, canonical serialization, hashing and replay | PROPOSED |
-| ADR-012 | Scenario Progression vs Narrative Direction/Realization | PROPOSED |
-| ADR-013 | Logical CQRS, critical projection and Transactional Outbox | PROPOSED |
-| ADR-014 | LLM runtime boundaries | PROPOSED |
-| ADR-015 | Guest identity / participation baseline | PROPOSED |
-
-Do not create/accept all ADRs mechanically.
-
-Create the individual ADR when its decision is being explicitly accepted, rejected or superseded.
+Do not silently reinterpret accepted ADRs during implementation.
