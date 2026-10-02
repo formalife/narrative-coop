@@ -181,3 +181,24 @@
 **NarrativeThreadInstance** — canonical runtime narrative-thread state only when rules consume it.
 
 **Predicate Epistemic Cardinality** — compiled policy such as SINGLE_VALUE or MULTI_HYPOTHESIS controlling allowed simultaneous active belief/suspicion values for one subject/scope.
+
+
+## Persistence additions — v0.3
+
+**SessionRuntime** — mutable synchronous current SessionState projection row and canonical concurrency anchor.
+
+**Canonical Event Bytes** — exact immutable serialized CanonicalEventContent stored as the authoritative event representation.
+
+**Event Index Metadata** — non-authoritative relational columns derived from canonical event bytes for query/index acceleration.
+
+**Processing Generation** — monotonically increasing fencing token for CommandProcessingRecord lease ownership.
+
+**Lease Generation** — monotonically increasing fencing token for Outbox work claims; stale generations cannot finalize task results.
+
+**Submission Content Hash** — hash of canonicalized mechanical ActionSubmission content, excluding operational timestamps.
+
+**Freeze Owner Command Key** — semantic CommandKey that owns a FrozenInputSet/resolution frontier after gate freeze.
+
+**Presentation Task Identity** — stable presentation_id/dedup identity used across async generation and delivery retries.
+
+**Delivery Guard** — check preventing a presentation built for a superseded PlayerInteractionView from being delivered as current gameplay.
