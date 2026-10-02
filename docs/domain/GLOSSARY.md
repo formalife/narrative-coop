@@ -238,3 +238,20 @@
 **Realtime Invalidation** — content-free private notification that a player's authoritative view may have changed; never carries canonical/private gameplay state itself.
 
 **Provider-specific Glue** — deployment/runtime integration such as Supabase Realtime policies/functions or Railway service configuration that may not redefine provider-neutral engine semantics.
+
+
+## Access-schema additions — v0.3
+
+**AuthSubject** — Supabase Auth user/JWT subject used only for operational authentication; not canonical gameplay identity.
+
+**Session Principal Binding** — operational record authorizing one AuthSubject to act/read as one ParticipantRef in one Session.
+
+**Binding Authorization Lock** — short PostgreSQL row lock on an ACTIVE binding used to linearize authorized requests against access revocation.
+
+**Participation Origin Transition** — canonical transition referenced by an access binding as historical evidence of the ParticipantRef's canonical establishment; semantic equality is verified outside SQL FK semantics.
+
+**Session Invite** — one-time operational capability for claiming a canonical participant slot; stores only a cryptographic token hash.
+
+**Invite Claim Linearization Point** — locked database wall-clock evaluation point at which invite status, expiry and canonical target availability are authoritatively checked.
+
+**Access Recovery/Rebind** — future privileged feature intentionally unsupported by the MVP access schema; adding it requires relaxing lifetime binding uniqueness.
