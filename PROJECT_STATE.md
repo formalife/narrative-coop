@@ -2,7 +2,7 @@
 
 **Project:** Narrative Co-op Engine  
 **Architecture phase:** Phase 0 COMPLETE  
-**Accepted architecture baseline:** v0.4 — ACCEPTED  
+**Accepted architecture baseline:** v0.5 — ACCEPTED  
 **Current work:** Implementation Platform Design  
 **Implementation status:** NOT STARTED  
 **Last updated:** 2026-10-02
@@ -13,10 +13,10 @@ Two players inhabit the same world, receive asymmetric information, take asymmet
 
 ## Accepted architecture
 
-Architecture Baseline v0.4 is the binding current architecture; v0.3 remains the accepted historical Phase-0 baseline.
+Architecture Baseline v0.5 is the binding current architecture; v0.3 remains the accepted historical Phase-0 baseline.
 
 Canonical baseline:
-- `docs/architecture/ARCHITECTURE_BASELINE_v0.4.md`
+- `docs/architecture/ARCHITECTURE_BASELINE_v0.5.md`
 
 Acceptance record:
 - `docs/architecture/PHASE_0_ACCEPTANCE.md`
@@ -48,7 +48,6 @@ Historical review chain:
 
 ## Still PROPOSED / not frozen
 
-- concrete `access` schema for principal bindings/invites.
 - exact Action tag/family vocabulary;
 - Claim selector syntax;
 - exact State Mutation IR target encoding;
@@ -115,8 +114,8 @@ Priority order:
 2. ADR-015 Guest Identity and Session Participation — ACCEPTED.
 3. ADR-016 Supabase PostgreSQL / Auth / Realtime Platform — ACCEPTED.
 4. ADR-017 Persistent API / Worker Runtime and Durable Outbox — ACCEPTED.
-5. Access Schema v0.3 — PROPOSED / READY FOR ACCEPTANCE.
-6. After acceptance, run Supabase/Railway connectivity, TLS, JWT, custom-role and Realtime integration spikes.
+5. Access Schema v0.3 — ACCEPTED.
+6. Run Supabase/Railway connectivity, TLS, JWT, custom-role and Realtime integration spikes.
 7. Only after those gates generate executable `db/migrations/`.
 8. Create implementation monorepo skeleton.
 9. Build resolver/state-transition/property-based/replay test harness.
@@ -269,8 +268,8 @@ Review chain:
 - `docs/persistence/POSTMORTEM_ACCESS_SCHEMA_v0.1.md`
 - `docs/persistence/ACCESS_SCHEMA_v0.2.md` — NOT ACCEPTED
 - `docs/persistence/POSTMORTEM_ACCESS_SCHEMA_v0.2.md`
-- `docs/persistence/ACCESS_SCHEMA_v0.3.md` — PROPOSED
-- `docs/persistence/RED_TEAM_ACCESS_SCHEMA_v0.3.md` — READY FOR ACCEPTANCE
+- `docs/persistence/ACCESS_SCHEMA_v0.3.md` — ACCEPTED
+- `docs/persistence/RED_TEAM_ACCESS_SCHEMA_v0.3.md` — PASS
 
 Key v0.3 decisions:
 - AuthSubject remains noncanonical.
@@ -285,4 +284,4 @@ Key v0.3 decisions:
 - SQL FKs prove identity/context; semantic validators prove ParticipantBound/slot meaning.
 - Realtime revocation is not treated as immediate security authority because authorization may be cached; Realtime payload remains content-free invalidation.
 
-No executable migrations until Access Schema v0.3 is explicitly accepted and deployment integration spikes pass.
+Access Schema v0.3 was explicitly ACCEPTED on 2026-10-02. Executable migrations remain blocked until the deployment integration spike passes.
