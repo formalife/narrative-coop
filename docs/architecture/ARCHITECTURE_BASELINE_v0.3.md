@@ -1,8 +1,8 @@
 # ARCHITECTURE BASELINE v0.3
 
-**Status:** PROPOSED  
+**Status:** ACCEPTED  
 **Date:** 2026-10-02  
-**Supersedes as working proposal:** v0.2  
+**Accepted Phase-0 baseline; supersedes:** v0.2 proposal  
 **Implementation:** NOT STARTED
 
 ## 1. Architectural thesis
@@ -1361,4 +1361,30 @@ This baseline is ready for explicit acceptance when we agree that the following 
 15. State/resolver/forensic/narrative replay boundaries.
 16. LLM exclusion from canonical mechanics.
 
-Until explicitly accepted, v0.3 remains **PROPOSED**.
+Accepted on 2026-10-02. Future structural changes require an explicit superseding ADR and a new baseline version.
+
+
+---
+
+# 44. Acceptance record
+
+Architecture Baseline v0.3 was explicitly accepted on 2026-10-02.
+
+Binding ADRs:
+
+- ADR-001 Selective Event Sourcing Scope
+- ADR-002 Session Stream and Single Canonical Frontier
+- ADR-003 PostgreSQL Persistence Baseline
+- ADR-004 Componentized Entity Model
+- ADR-005 EngineCommand and ActionSubmission Authority Boundary
+- ADR-006 Claims, Interaction Graph and Deterministic Resolver
+- ADR-007 Semantic Domain Events and State Mutation IR
+- ADR-008 Epistemic Model
+- ADR-009 Temporal and Scheduler Model
+- ADR-010 Compiled Scenario Bundle and Pure Rules
+- ADR-011 Versioning, Canonical Serialization, Hashing and Replay
+- ADR-012 Scenario Progression, Narrative Direction and Realization Separation
+- ADR-013 Logical CQRS, Critical Projection and Transactional Outbox
+- ADR-014 LLM Runtime Boundaries
+
+ADR-015 Guest Identity / Participation remains PROPOSED and is not part of the accepted Phase-0 architecture.
