@@ -69,8 +69,8 @@ Historical review chain:
 
 Translate the accepted architecture into explicit contracts and invariants before writing production code.
 
-Current contract proposal:
-- `docs/domain/DOMAIN_CONTRACTS_v0.2.md` — PROPOSED
+Accepted contract baseline:
+- `docs/domain/DOMAIN_CONTRACTS_v0.2.md` — ACCEPTED
 
 Historical contract proposal:
 - `docs/domain/DOMAIN_CONTRACTS_v0.1.md`
@@ -88,10 +88,9 @@ Review:
 - `docs/domain/RED_TEAM_DOMAIN_CONTRACTS_v0.2.md`
 
 Verdict:
-- DOMAIN_CONTRACTS_v0.2 is technically READY FOR ACCEPTANCE.
-- It remains PROPOSED until explicitly accepted.
+- DOMAIN_CONTRACTS_v0.2 — ACCEPTED on 2026-10-02.
 
-Do not proceed to DOMAIN_MODEL or SQL schema until the contract boundary is explicitly accepted.
+Current authorized work: Domain Model design and red-team. SQL schema remains blocked until the Domain Model is sufficiently stable.
 
 Priority order:
 
