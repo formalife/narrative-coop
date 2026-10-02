@@ -3,7 +3,7 @@
 **Project:** Narrative Co-op Engine  
 **Architecture phase:** Phase 0 COMPLETE  
 **Accepted architecture baseline:** v0.5 — ACCEPTED  
-**Current work:** Implementation Platform Design  
+**Current work:** Deployment Integration Validation  
 **Implementation status:** NOT STARTED  
 **Last updated:** 2026-10-02
 
@@ -115,8 +115,9 @@ Priority order:
 3. ADR-016 Supabase PostgreSQL / Auth / Realtime Platform — ACCEPTED.
 4. ADR-017 Persistent API / Worker Runtime and Durable Outbox — ACCEPTED.
 5. Access Schema v0.3 — ACCEPTED.
-6. Run Supabase/Railway connectivity, TLS, JWT, custom-role and Realtime integration spikes.
-7. Only after those gates generate executable `db/migrations/`.
+6. Deployment Integration Spike v0.1 — PARTIAL / BLOCKED on Railway ownership scope.
+7. Resume as v0.2 after Formalife Railway workspace becomes available; then complete TLS/JWT/concurrency/Realtime tests.
+8. Only after those gates generate executable `db/migrations/`.
 8. Create implementation monorepo skeleton.
 9. Build resolver/state-transition/property-based/replay test harness.
 10. Build the disposable technical micro-scenario before product UI/story implementation.
@@ -285,3 +286,52 @@ Key v0.3 decisions:
 - Realtime revocation is not treated as immediate security authority because authorization may be cached; Realtime payload remains content-free invalidation.
 
 Access Schema v0.3 was explicitly ACCEPTED on 2026-10-02. Executable migrations remain blocked until the deployment integration spike passes.
+
+
+## Deployment integration checkpoint
+
+Access Schema v0.3 was explicitly ACCEPTED on 2026-10-02.
+
+Current accepted architecture baseline:
+- `docs/architecture/ARCHITECTURE_BASELINE_v0.5.md` — ACCEPTED.
+
+Live integration artifacts:
+- `docs/operations/DEPLOYMENT_INTEGRATION_SPIKE_v0.1.md` — PARTIAL / BLOCKED.
+- `docs/operations/POSTMORTEM_DEPLOYMENT_INTEGRATION_SPIKE_v0.1.md`.
+
+### Supabase result
+
+A Formalife staging project now exists:
+- project name: `narrative-coop-staging`;
+- region: `eu-central-1`;
+- PostgreSQL target: 17.11 / provider build 17.11.0.002;
+- status: healthy.
+
+Verified on real target:
+- custom LOGIN/group role model;
+- least-privilege grants;
+- deferred FK behavior;
+- Realtime/Auth database primitives;
+- SSL support enabled.
+
+Still pending:
+- actual external verify-full connection;
+- anonymous Auth/JWT live flow;
+- two-session concurrency/SKIP LOCKED/fencing;
+- private Realtime end-to-end.
+
+### Railway result
+
+Connected Railway account currently exposes only a personal workspace and an unrelated existing project.
+
+No Formalife team/workspace is visible.
+
+Decision:
+- do NOT create Narrative Co-op Railway infrastructure under the personal workspace;
+- resume deployment spike when Formalife Railway ownership scope is available.
+
+### Migration gate
+
+Executable production-ready migrations remain BLOCKED until deployment spike v0.2 completes the pending cross-provider tests.
+
+No accepted architecture/ADR/schema decision requires modification.
