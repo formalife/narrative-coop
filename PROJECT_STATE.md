@@ -1,9 +1,9 @@
 # PROJECT STATE
 
 **Project:** Narrative Co-op Engine  
-**Phase:** Phase 0 — Architecture Discovery / Acceptance Review  
-**Active working baseline:** v0.3 — PROPOSED  
-**Previous baselines:** v0.1, v0.2 — historical proposals  
+**Architecture phase:** Phase 0 COMPLETE  
+**Accepted architecture baseline:** v0.3 — ACCEPTED  
+**Current work:** Contract & Domain Model Design  
 **Implementation status:** NOT STARTED  
 **Last updated:** 2026-10-02
 
@@ -11,136 +11,51 @@
 
 Two players inhabit the same world, receive asymmetric information, take asymmetric actions, and produce one canonical timeline through deterministic causal merge.
 
-## Current status
+## Accepted architecture
 
-v0.2 underwent a second-pass architecture review and postmortem.
+Architecture Baseline v0.3 is the binding Phase-0 architecture.
 
-Canonical artifacts:
+Canonical baseline:
+- `docs/architecture/ARCHITECTURE_BASELINE_v0.3.md`
 
+Acceptance record:
+- `docs/architecture/PHASE_0_ACCEPTANCE.md`
+
+Historical review chain:
 - `docs/architecture/RED_TEAM_v0.1.md`
 - `docs/architecture/ARCHITECTURE_BASELINE_v0.2.md`
 - `docs/architecture/POSTMORTEM_v0.2.md`
-- `docs/architecture/ARCHITECTURE_BASELINE_v0.3.md`
 
-### Verdict on v0.2
+## Accepted ADRs
 
-**MODIFY.**
+- ADR-001 — Selective Event Sourcing Scope
+- ADR-002 — Session Stream and Single Canonical Frontier
+- ADR-003 — PostgreSQL Persistence Baseline
+- ADR-004 — Componentized Entity Model
+- ADR-005 — EngineCommand and ActionSubmission Authority Boundary
+- ADR-006 — Claims, Interaction Graph and Deterministic Resolver
+- ADR-007 — Semantic Domain Events and State Mutation IR
+- ADR-008 — Epistemic Model
+- ADR-009 — Temporal and Scheduler Model
+- ADR-010 — Compiled Scenario Bundle and Pure Rules
+- ADR-011 — Versioning, Canonical Serialization, Hashing and Replay
+- ADR-012 — Scenario Progression / Narrative Direction / Realization Separation
+- ADR-013 — Logical CQRS / Critical Projection / Transactional Outbox
+- ADR-014 — LLM Runtime Boundaries
 
-v0.2 preserved the correct architectural center but was not accepted as the final Phase-0 baseline because it left material gaps in:
+## Still PROPOSED / not frozen
 
-- authoritative command/idempotency boundary;
-- canonical state behavior while a ResolutionWindow is open;
-- deterministic event hash scope/identity;
-- deterministic numeric semantics;
-- epistemic stance semantics;
-- Fact lifecycle;
-- canonical Scenario Progression versus presentation-only Narrative Direction;
-- reliable post-commit handoff;
-- causally relevant PresentationRecords;
-- pure rule execution;
-- historical build/replay compatibility.
-
-v0.3 addresses these issues.
-
-No architecture ADR is ACCEPTED yet.
-
-## Current v0.3 proposal
-
-### Canonical progression
-
-- One canonical ordered event stream per Session.
-- Single Canonical Frontier: at most one canonical gameplay progression operation advances a Session at a time.
-- Simultaneous ResolutionWindows collect pending input against a fixed canonical base revision.
-- Logical scheduler/progression events do not independently mutate through an open simultaneous window.
-- Expected-revision concurrency is a safety check rather than the normal gameplay arbitration mechanism.
-
-### Commands and input
-
-- All authoritative inputs enter through idempotent EngineCommands.
-- Authenticated/system principal is server-bound.
-- ActionSubmission is durable pending input, not canonical world truth.
-- Window freeze selects the final submission per ActionSlot.
-
-### Actions and resolution
-
-- ActionDefinition remains scenario authority.
-- ExpandedAction is derived server-side.
-- Claims are typed and authoritative.
-- Interaction Graph/groups support contention, exclusion, interference, dependency, complementarity and order sensitivity.
-- Resolver remains deterministic and limited to bounded versioned strategies.
-
-### Progression and narrative
-
-- Scenario Progression is canonical and owns DecisionPoint/window/ending activation.
-- Narrative Direction is presentation-only.
-- Narrative Realization is noncanonical but exact delivered output is stored in immutable PresentationRecords because it can causally influence later human choices.
-
-### Events/state/replay
-
-- CanonicalEventContent is separated from operational EventRecordMetadata.
-- Semantic hashes exclude wall-clock/database metadata.
-- Event/action identities used by replay must be deterministic or stored historical inputs.
-- Semantic Domain Events remain separate from typed State Mutation IR.
-- Canonical numeric mechanics use integers/fixed-point/declared units, not unconstrained floating point.
-- Logical time uses deterministic integer representation.
-- Epistemics separates Proposition, Fact, Observation, KnowledgeRecord, BeliefRecord, SuspicionRecord and CommunicationClaim.
-- Normal Fact lifecycle ends/supersedes validity; it does not erase historical truth.
-- Named seeded randomness remains required.
-- State, resolver, forensic and narrative replay are distinguished.
-
-### Persistence/reliability
-
-- Selective Event Sourcing for canonical Session history.
-- PostgreSQL remains proposed primary persistence.
-- Logical CQRS with synchronous critical projection.
-- Transactional outbox provides durable post-commit handoff.
-- No broker/Redis/microservices required by baseline.
-
-All remain PROPOSALS until explicitly accepted and recorded via ADR.
-
-## Immediate next work
-
-1. Review/accept or amend Architecture Baseline v0.3.
-2. Promote accepted structural decisions into ADRs.
-3. Mark the accepted Phase-0 baseline.
-4. Only then design:
-   - concrete domain/data model;
-   - command/action/event/mutation contracts;
-   - SQL schema;
-   - implementation monorepo skeleton;
-   - resolver test harness;
-   - tiny disposable technical micro-scenario.
-
-## Highest-priority ADRs after acceptance
-
-- ADR-001 Selective Event Sourcing scope.
-- ADR-002 Session stream + Single Canonical Frontier.
-- ADR-003 PostgreSQL persistence baseline.
-- ADR-004 Componentized Entity Model.
-- ADR-005 EngineCommand + ActionSubmission authority boundary.
-- ADR-006 Claim/Interaction/Resolver model.
-- ADR-007 Semantic Domain Event + State Mutation IR.
-- ADR-008 Epistemic model.
-- ADR-009 Temporal/Scheduler model.
-- ADR-010 Scenario compilation + pure deterministic rules.
-- ADR-011 Versioning, canonical serialization, hashing and replay.
-- ADR-012 Scenario Progression / Narrative Direction / Realization split.
-- ADR-013 Logical CQRS + synchronous critical projection + transactional outbox.
-- ADR-014 LLM runtime boundaries.
-- ADR-015 Guest identity/participation baseline (later, before implementation).
-
-## Decisions intentionally not frozen
-
-- exact Action tag vocabulary;
+- ADR-015 Guest identity / participation baseline.
+- exact Action tag/family vocabulary;
 - Claim selector syntax;
-- exact Mutation IR target representation;
+- exact State Mutation IR target encoding;
 - exact fixed-point scales;
-- PRNG implementation;
+- exact PRNG;
 - final Scenario DSL syntax;
-- free-text action confirmation policy;
+- natural-language confirmation policy;
 - snapshot frequency;
-- SQL table/index design;
-- detailed relationship/goal/commitment structures;
+- concrete SQL tables/indexes;
+- detailed Relationship/Goal/Commitment schemas;
 - Scenario Studio UI;
 - NPC agent architecture;
 - vector/graph databases;
@@ -148,16 +63,68 @@ All remain PROPOSALS until explicitly accepted and recorded via ADR.
 - microservices;
 - payment provider;
 - retention periods;
-- recap video pipeline.
+- recap/video pipeline.
+
+## Current objective
+
+Translate the accepted architecture into explicit contracts and invariants before writing production code.
+
+Priority order:
+
+1. Define concrete domain contracts:
+   - EngineCommand;
+   - ActionSubmission;
+   - ActionDefinition;
+   - ExpandedAction;
+   - Claim;
+   - InteractionEdge/InteractionGroup;
+   - ResolutionWindow;
+   - AdmissionResult/ActionOutcome;
+   - ResolutionPlan/ResolutionRecord;
+   - CanonicalEventContent/EventRecordMetadata;
+   - State Mutation IR;
+   - Proposition/Fact/Observation/Knowledge/Belief/Suspicion/CommunicationClaim;
+   - ScheduledEffect;
+   - Scenario Progression structures;
+   - PresentationPlan/PresentationRecord;
+   - Outbox item;
+   - VersionManifest.
+
+2. Define lifecycle state machines and cross-contract invariants.
+
+3. Define the concrete domain/data model.
+
+4. Define SQL schema and migration strategy.
+
+5. Create implementation monorepo skeleton only after the contracts above are sufficiently stable.
+
+6. Build resolver/state-transition/property-based test harness.
+
+7. Build the disposable technical micro-scenario proving causal merge, asymmetric knowledge, delayed consequences and deterministic replay.
+
+## Non-negotiable implementation constraints inherited from v0.3
+
+- One canonical Session event stream.
+- Single Canonical Frontier.
+- Server-bound authority and idempotent commands.
+- Client cannot author claims/effects.
+- Deterministic rules, logical time and numeric mechanics.
+- Explicit epistemic semantics.
+- Canonical Scenario Progression separate from presentation.
+- Semantic Domain Events + typed Mutation IR.
+- Named seeded randomness.
+- Synchronous critical projection + transactional outbox.
+- Versioned canonical hashing and replay.
+- LLM outside canonical mechanics.
 
 ## Canonical working rule
 
-GitHub is the canonical technical source of truth.
+GitHub remains the technical source of truth.
 
-Never silently convert a PROPOSAL into a DECISION.
+Accepted ADRs may not be silently reinterpreted.
 
-When a structural decision is explicitly accepted:
-1. create/update ADR;
-2. mark ADR ACCEPTED;
-3. update active baseline status;
-4. update this PROJECT_STATE.
+If contract design reveals a conflict with an ACCEPTED ADR:
+1. identify the conflict;
+2. stop treating the conflicting design as implementation detail;
+3. propose a superseding ADR;
+4. update baseline/project state only after explicit acceptance.
