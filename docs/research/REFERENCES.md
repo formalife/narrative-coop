@@ -114,3 +114,40 @@ The Transactional Outbox pattern persists business state changes and outgoing wo
 
 PROJECT IMPLICATION:
 Canonical Session commit and required post-commit work should insert outbox records in the same PostgreSQL transaction. Consumers must be idempotent. A broker is not required for the MVP baseline.
+
+
+### PostgreSQL — Row-Level Locking
+https://www.postgresql.org/docs/current/explicit-locking.html
+
+FACT:
+PostgreSQL row-level locks such as FOR UPDATE serialize conflicting lockers/writers and are released at transaction end.
+
+PROJECT IMPLICATION:
+Use short row-locking transactions for Session frontier, input freeze and work claiming. Never hold database row locks across LLM/network/media calls.
+
+### PostgreSQL — SKIP LOCKED
+https://www.postgresql.org/about/featurematrix/detail/skip-locked-clause/
+
+FACT:
+PostgreSQL supports SKIP LOCKED so a worker can skip rows already locked by another claimant.
+
+PROJECT IMPLICATION:
+Useful for short transactional Outbox claim operations; task processing still uses explicit leases/fencing after the claim transaction commits.
+
+### PostgreSQL — CREATE INDEX / Partial Indexes
+https://www.postgresql.org/docs/current/sql-createindex.html
+
+FACT:
+PostgreSQL supports partial indexes and partial UNIQUE indexes over rows matching a predicate.
+
+PROJECT IMPLICATION:
+A partial unique index is a candidate for enforcing at most one nonterminal pending-input gate per Session.
+
+### PostgreSQL — GIN / JSONB Indexing
+https://www.postgresql.org/docs/current/gin.html
+
+FACT:
+PostgreSQL includes GIN operator classes for JSONB containment/path query patterns.
+
+PROJECT IMPLICATION:
+JSONB is viable for scenario-defined/current projection structures, but indexes should be added only for demonstrated query patterns rather than blanket-indexing all payloads.
