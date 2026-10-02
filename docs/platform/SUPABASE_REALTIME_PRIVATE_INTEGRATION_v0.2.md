@@ -1,8 +1,8 @@
 # SUPABASE REALTIME PRIVATE INTEGRATION v0.2
 
-**Status:** PROPOSED  
+**Status:** ACCEPTED  
 **Date:** 2026-10-02  
-**Supersedes as working proposal:** SUPABASE_REALTIME_PRIVATE_INTEGRATION_v0.1  
+**Supersedes:** SUPABASE_REALTIME_PRIVATE_INTEGRATION_v0.1  
 **Governing architecture:** Architecture Baseline v0.5 — ACCEPTED  
 **Governing platform:** Implementation Platform v0.3 — ACCEPTED  
 **Governing access schema:** Access Schema v0.3 — ACCEPTED
@@ -299,3 +299,22 @@ Before acceptance:
 15. private channel join fails for unrelated user;
 16. security advisors report no new material issue.
 
+
+
+---
+
+# Acceptance record
+
+Supabase Realtime Private Integration v0.2 was explicitly accepted on 2026-10-02.
+
+Acceptance evidence:
+- `POSTMORTEM_SUPABASE_REALTIME_PRIVATE_INTEGRATION_v0.2.md`
+- real-target helper/sender spikes on the Formalife Supabase staging project.
+
+Binding provider-specific decisions:
+- private Broadcast only;
+- receive authorization uses `realtime.topic()` + `auth.uid()`;
+- provider helper schema is `platform_supabase`, not `access`;
+- authenticated clients receive no Broadcast-send policy;
+- worker emits fixed private invalidation through a narrow DB wrapper;
+- Supabase Realtime public access must be disabled at deployment.
