@@ -217,3 +217,24 @@
 **Migration Owner** — dedicated database role owning DDL/functions; never used as normal application runtime credentials.
 
 **Provider-neutral Migration Archive** — canonical GitHub SQL migration path under `db/migrations/`, independent from a particular hosting provider's CLI layout.
+
+
+## Implementation-platform additions — v0.3
+
+**AuthSubject** — external authenticated security subject (initially Supabase Auth user/JWT subject); operational identity, never canonical world identity.
+
+**Session Principal Binding** — noncanonical access record mapping one verified AuthSubject to one ParticipantRef for one Session.
+
+**Access Schema** — internal PostgreSQL schema containing operational authorization/invite state; separate from canonical engine world state.
+
+**Engine Runtime Role** — least-privilege PostgreSQL role used by the authoritative engine API for accepted command/current-state transactions.
+
+**Engine Worker Role** — least-privilege PostgreSQL role used by the Outbox worker for presentation/realtime/secondary work; cannot mutate canonical Session state.
+
+**Persistent API Runtime** — long-running service exposing authoritative HTTP commands/views while keeping canonical authority in PostgreSQL.
+
+**Persistent Outbox Worker** — long-running service that claims durable PostgreSQL Outbox work using locks, leases and fencing; process uptime is not work durability.
+
+**Realtime Invalidation** — content-free private notification that a player's authoritative view may have changed; never carries canonical/private gameplay state itself.
+
+**Provider-specific Glue** — deployment/runtime integration such as Supabase Realtime policies/functions or Railway service configuration that may not redefine provider-neutral engine semantics.
