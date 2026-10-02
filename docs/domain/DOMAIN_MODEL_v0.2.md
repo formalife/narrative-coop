@@ -1,11 +1,11 @@
 # DOMAIN MODEL v0.2
 
-**Status:** PROPOSED  
+**Status:** ACCEPTED  
 **Date:** 2026-10-02  
 **Governing architecture:** Architecture Baseline v0.3 — ACCEPTED  
 **Accepted contracts:** Domain Contracts v0.2 — ACCEPTED  
-**Required contract amendment:** Domain Contracts v0.3 — PROPOSED  
-**Supersedes as working proposal:** DOMAIN_MODEL_v0.1
+**Governing contract amendment:** Domain Contracts v0.3 — ACCEPTED  
+**Supersedes:** DOMAIN_MODEL_v0.1
 
 ## 1. Scope
 
@@ -1115,7 +1115,7 @@ Still deliberately unfrozen:
 
 ## 47. Acceptance dependencies
 
-DOMAIN_MODEL_v0.2 cannot be accepted before:
+Domain Model v0.2 was accepted after the following gate was satisfied:
 
 1. Domain Contracts v0.3 is explicitly accepted, because SessionGenesis/session_seed is required for reconstruction;
 2. red-team confirms no new contract/ADR conflict;
@@ -1130,3 +1130,16 @@ DOMAIN_MODEL_v0.2 cannot be accepted before:
    - secret classification does not grant knowledge.
 
 Only after acceptance may persistence/SQL model begin.
+
+
+---
+
+## Acceptance record
+
+Domain Model v0.2 was explicitly accepted on 2026-10-02 after Domain Contracts v0.3 acceptance.
+
+Acceptance evidence:
+- `RED_TEAM_DOMAIN_MODEL_v0.2.md`
+- `POSTMORTEM_DOMAIN_MODEL_v0.1.md`
+
+This model now governs persistence/data-model design. Storage choices may optimize representation but may not change ownership, lifecycle, reconstruction, or authority semantics defined here.
