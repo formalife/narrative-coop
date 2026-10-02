@@ -3,7 +3,7 @@
 **Project:** Narrative Co-op Engine  
 **Architecture phase:** Phase 0 COMPLETE  
 **Accepted architecture baseline:** v0.3 — ACCEPTED  
-**Current work:** Contract & Domain Model Design  
+**Current work:** Implementation Platform Design  
 **Implementation status:** NOT STARTED  
 **Last updated:** 2026-10-02
 
@@ -45,7 +45,10 @@ Historical review chain:
 
 ## Still PROPOSED / not frozen
 
-- ADR-015 Guest identity / participation baseline.
+- ADR-015 Guest identity / Session participation.
+- ADR-016 Supabase PostgreSQL / Auth / Realtime platform baseline.
+- ADR-017 Persistent API / Worker runtime and durable Outbox.
+- concrete `access` schema for principal bindings/invites.
 - exact Action tag/family vocabulary;
 - Claim selector syntax;
 - exact State Mutation IR target encoding;
@@ -54,7 +57,6 @@ Historical review chain:
 - final Scenario DSL syntax;
 - natural-language confirmation policy;
 - snapshot frequency;
-- concrete SQL tables/indexes;
 - detailed Relationship/Goal/Commitment schemas;
 - Scenario Studio UI;
 - NPC agent architecture;
@@ -67,7 +69,7 @@ Historical review chain:
 
 ## Current objective
 
-Translate the accepted architecture into explicit contracts and invariants before writing production code.
+Freeze the minimum implementation platform and access-security boundary required to safely materialize the accepted PostgreSQL schema before writing production code.
 
 Accepted contract baseline:
 - `docs/domain/DOMAIN_CONTRACTS_v0.3.md` — ACCEPTED
@@ -105,40 +107,20 @@ The Domain Model postmortem found additive contract gaps: durable Session seed/b
 
 No ACCEPTED ADR requires supersession.
 
-Persistence/Data Model design is now authorized. SQL migrations remain blocked until persistence design is red-teamed and accepted.
+Domain Contracts v0.3, Domain Model v0.2, Persistence Data Model v0.3 and PostgreSQL Schema v0.5 are accepted. Executable migrations remain blocked until the implementation platform/access boundary and deployment spikes are accepted.
 
 Priority order:
 
-1. Review and accept/amend concrete domain contracts:
-   - EngineCommand;
-   - ActionSubmission;
-   - ActionDefinition;
-   - ExpandedAction;
-   - Claim;
-   - InteractionEdge/InteractionGroup;
-   - ResolutionWindow;
-   - AdmissionResult/ActionOutcome;
-   - ResolutionPlan/ResolutionRecord;
-   - CanonicalEventContent/EventRecordMetadata;
-   - State Mutation IR;
-   - Proposition/Fact/Observation/Knowledge/Belief/Suspicion/CommunicationClaim;
-   - ScheduledEffect;
-   - Scenario Progression structures;
-   - PresentationPlan/PresentationRecord;
-   - Outbox item;
-   - VersionManifest.
-
-2. Domain Contracts v0.3 — ACCEPTED.
-
-3. Domain Model v0.2 — ACCEPTED.
-
-4. Define persistence/data model; red-team it; only then define SQL schema/migration strategy.
-
-5. Create implementation monorepo skeleton only after the contracts above are sufficiently stable.
-
-6. Build resolver/state-transition/property-based test harness.
-
-7. Build the disposable technical micro-scenario proving causal merge, asymmetric knowledge, delayed consequences and deterministic replay.
+1. Implementation Platform v0.3 — PROPOSED / READY FOR ACCEPTANCE.
+2. ADR-015 Guest Identity and Session Participation — PROPOSED.
+3. ADR-016 Supabase PostgreSQL / Auth / Realtime Platform — PROPOSED.
+4. ADR-017 Persistent API / Worker Runtime and Durable Outbox — PROPOSED.
+5. After acceptance, design/red-team the additive `access` schema.
+6. Run Supabase/Railway connectivity, TLS, JWT, custom-role and Realtime integration spikes.
+7. Only after those gates generate executable `db/migrations/`.
+8. Create implementation monorepo skeleton.
+9. Build resolver/state-transition/property-based/replay test harness.
+10. Build the disposable technical micro-scenario before product UI/story implementation.
 
 ## Non-negotiable implementation constraints inherited from v0.3
 
@@ -213,8 +195,8 @@ Schema design review chain:
 - `docs/persistence/POSTMORTEM_POSTGRESQL_SCHEMA_v0.3.md`
 - `docs/persistence/POSTGRESQL_SCHEMA_v0.4.md` — NOT ACCEPTED
 - `docs/persistence/POSTMORTEM_POSTGRESQL_SCHEMA_v0.4.md`
-- `docs/persistence/POSTGRESQL_SCHEMA_v0.5.md` — PROPOSED
-- `docs/persistence/RED_TEAM_POSTGRESQL_SCHEMA_v0.5.md` — READY FOR ACCEPTANCE
+- `docs/persistence/POSTGRESQL_SCHEMA_v0.5.md` — ACCEPTED
+- `docs/persistence/RED_TEAM_POSTGRESQL_SCHEMA_v0.5.md` — PASS
 
 Key v0.5 corrections include:
 
@@ -231,12 +213,44 @@ No accepted ADR, Domain Contract, Domain Model or Persistence Model requires sup
 
 ### Migration implementation remains blocked
 
-Even after schema acceptance, executable production migrations are not considered implementation-ready until the project freezes/tests:
+PostgreSQL Schema v0.5 was explicitly ACCEPTED on 2026-10-02.
 
-1. target PostgreSQL major;
-2. hosting/provider;
-3. runtime/worker/migration role mapping;
-4. ADR-015 guest identity/participation;
-5. exposed-schema/RLS strategy.
+Executable migrations are not implementation-ready until:
 
-Do not create production migration files before those implementation-platform decisions are sufficiently defined.
+1. Implementation Platform v0.3 and ADR-015..017 are explicitly accepted;
+2. additive access-schema design is red-teamed/accepted;
+3. the target Supabase PostgreSQL 17 project/version is recorded;
+4. custom runtime/worker DB roles are tested through the selected connection path;
+5. TLS verify-full, JWT validation and private Realtime authorization are tested;
+6. Railway/Supabase region and deployment role mapping are fixed.
+
+Do not create production migration files before these gates.
+
+
+## Implementation platform checkpoint
+
+Historical proposals:
+- `docs/architecture/IMPLEMENTATION_PLATFORM_v0.1.md` — NOT ACCEPTED
+- `docs/architecture/POSTMORTEM_IMPLEMENTATION_PLATFORM_v0.1.md`
+- `docs/architecture/IMPLEMENTATION_PLATFORM_v0.2.md` — NOT ACCEPTED
+- `docs/architecture/POSTMORTEM_IMPLEMENTATION_PLATFORM_v0.2.md`
+
+Current proposal:
+- `docs/architecture/IMPLEMENTATION_PLATFORM_v0.3.md` — PROPOSED
+- `docs/architecture/RED_TEAM_IMPLEMENTATION_PLATFORM_v0.3.md` — READY FOR ACCEPTANCE
+
+Proposed topology:
+- Supabase: managed PostgreSQL 17 + Auth + private Realtime.
+- Railway: separate persistent `engine-api` and `engine-worker`.
+- custom least-privilege PostgreSQL LOGIN role per service.
+- no Supabase secret/service-role key in normal API/worker runtime.
+- JWT verification via Supabase Auth public signing metadata.
+- private Realtime invalidation emitted through a narrow DB wrapper.
+- PostgreSQL Outbox remains durable work authority; no Redis/pgmq/broker.
+
+Reason for v0.2 -> v0.3:
+current Supabase Edge Functions receive broad default project DB/secret credentials, which conflicts with the accepted service-level privilege separation. Supabase remains the data/auth/realtime platform; authoritative compute moves to scoped persistent services.
+
+No ACCEPTED ADR-001..014 or accepted domain/persistence/schema decision requires supersession.
+
+No executable migrations or implementation code until this platform checkpoint is explicitly accepted.
