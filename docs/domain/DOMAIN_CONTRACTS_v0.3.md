@@ -4,7 +4,7 @@
 **Date:** 2026-10-02  
 **Supersedes if accepted:** DOMAIN_CONTRACTS_v0.2  
 **Governing architecture:** Architecture Baseline v0.3 — ACCEPTED  
-**Purpose:** additive correction to accepted v0.2 for deterministic Session bootstrap/RNG ownership; otherwise preserves v0.2 semantics.
+**Purpose:** additive model-driven corrections to accepted v0.2 for deterministic Session bootstrap/RNG ownership, epistemic cardinality, information classification and terminal window consistency; otherwise preserves v0.2 semantics.
 
 ---
 
