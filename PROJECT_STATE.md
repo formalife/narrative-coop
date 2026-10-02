@@ -82,7 +82,16 @@ v0.1 was NOT accepted. The postmortem found contract-level ambiguities around wi
 
 v0.2 addresses those findings without changing any ACCEPTED ADR.
 
-The next checkpoint is an acceptance review/red-team of DOMAIN_CONTRACTS_v0.2. Do not proceed to DOMAIN_MODEL or SQL schema until the contract boundary is accepted.
+The acceptance review/red-team of DOMAIN_CONTRACTS_v0.2 is complete.
+
+Review:
+- `docs/domain/RED_TEAM_DOMAIN_CONTRACTS_v0.2.md`
+
+Verdict:
+- DOMAIN_CONTRACTS_v0.2 is technically READY FOR ACCEPTANCE.
+- It remains PROPOSED until explicitly accepted.
+
+Do not proceed to DOMAIN_MODEL or SQL schema until the contract boundary is explicitly accepted.
 
 Priority order:
 
