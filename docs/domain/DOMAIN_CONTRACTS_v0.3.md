@@ -1,8 +1,8 @@
 # DOMAIN CONTRACTS v0.3
 
-**Status:** PROPOSED  
+**Status:** ACCEPTED  
 **Date:** 2026-10-02  
-**Supersedes if accepted:** DOMAIN_CONTRACTS_v0.2  
+**Supersedes:** DOMAIN_CONTRACTS_v0.2  
 **Governing architecture:** Architecture Baseline v0.3 — ACCEPTED  
 **Purpose:** additive model-driven corrections to accepted v0.2 for deterministic Session bootstrap/RNG ownership, epistemic cardinality, information classification and terminal window consistency; otherwise preserves v0.2 semantics.
 
@@ -1951,7 +1951,7 @@ Acceptance review completed against the following gate:
    - progression non-convergence;
 4. decide whether any remaining open item is implementation-blocking.
 
-v0.3 remains PROPOSED until explicitly accepted. SQL schema remains blocked.
+Accepted on 2026-10-02. This is now the binding Domain Contracts baseline.
 
 
 ---
@@ -1994,3 +1994,16 @@ Domain Model v0.1 postmortem found that ADR-011 requires Session seed retention 
 ## Acceptance dependency
 
 If accepted, v0.3 supersedes v0.2 as the contract baseline without changing ADR-001 through ADR-014.
+
+
+---
+
+# Acceptance record
+
+Domain Contracts v0.3 were explicitly accepted on 2026-10-02.
+
+Acceptance evidence:
+- `RED_TEAM_DOMAIN_CONTRACTS_v0.3.md`
+- `POSTMORTEM_DOMAIN_MODEL_v0.1.md`
+
+v0.3 supersedes Domain Contracts v0.2 as the binding contract baseline.
