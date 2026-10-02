@@ -1,6 +1,6 @@
 # ADR-017 — Persistent API / Worker Runtime and Durable Outbox Processing
 
-**Status:** PROPOSED  
+**Status:** ACCEPTED  
 **Date:** 2026-10-02
 
 ## Context
@@ -145,3 +145,10 @@ Revisit compute provider/runtime if:
 - measured connection/network behavior favors another deployment topology.
 
 A runtime-host change must not alter accepted canonical contracts/persistence semantics.
+
+
+---
+
+## Acceptance record
+
+Explicitly accepted on 2026-10-02 as part of Implementation Platform Baseline v0.3.
