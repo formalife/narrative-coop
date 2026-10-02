@@ -201,7 +201,10 @@ SessionGenesis
 - SessionGenesis is created exactly once per Session.
 - `session_seed` is immutable and is the authoritative seed root for NamedRandomDraw derivation.
 - `scenario_bundle_hash` MUST match the pinned MechanicsVersionManifest.
-- `initial_canonical_state_hash` hashes the revision-0 CanonicalStateContent derived from the pinned CompiledScenarioBundle plus any creation-time canonical bootstrap bindings allowed by Session creation policy.
+- `initial_canonical_state_hash` hashes the revision-0 CanonicalStateContent derived deterministically from the pinned CompiledScenarioBundle and immutable Genesis fields only.
+- Revision 0 MUST NOT depend on implicit external/account state.
+- Dynamic participant/role bindings established after Session creation are canonical Domain Events at revision 1+.
+- Canonical random setup MUST NOT occur as hidden bootstrap mutation. If a scenario needs random initialization, it runs as an explicit first canonical transition using NamedRandomDraw evidence.
 - `created_at` is operational metadata and is excluded from canonical state/hash semantics.
 - SessionGenesis is required for deterministic state/resolver reconstruction but is not itself a Domain Event.
 - Canonical event StreamRevision starts at 1 after the revision-0 bootstrap state.
@@ -211,14 +214,16 @@ SessionGenesis
 Mechanical reconstruction begins from:
 
 ```
-CompiledScenarioBundle
-+ SessionGenesis
+CompiledScenarioBundle static initial state
++ SessionGenesis immutable deterministic metadata
 = revision-0 CanonicalStateContent
 ```
 
 Then ordered canonical Domain Events produce revisions 1+.
 
-Any participant/role binding established after revision 0 MUST be represented through canonical Session events.
+Any dynamic participant/role binding established after revision 0 MUST be represented through canonical Session events.
+
+Revision-0 state is therefore deliberately boring and reproducible: no hidden randomization, no mutable account lookup, no wall-clock-derived gameplay state.
 
 ---
 
@@ -1933,6 +1938,7 @@ Added:
 - SessionGenesis;
 - explicit durable ownership of session_seed;
 - revision-0 bootstrap reconstruction rule;
+- explicit prohibition on hidden/random/external bootstrap state;
 - bootstrap/replay invariants.
 
 All other accepted Domain Contracts v0.2 semantics remain unchanged unless explicitly restated here.
