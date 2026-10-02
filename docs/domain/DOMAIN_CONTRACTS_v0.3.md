@@ -1254,6 +1254,10 @@ PredicateDefinition
   argument_schema
   value_schema
   temporal_semantics
+
+  epistemic_cardinality_policy:
+    SINGLE_VALUE
+    | MULTI_HYPOTHESIS
 ```
 
 ## PropositionValue
@@ -1276,6 +1280,8 @@ PropositionValue
 Content-derived deterministically from canonical PropositionValue fields excluding proposition_key itself.
 
 This supports propositions involving runtime-created entities/values without predeclaring every proposition instance.
+
+`epistemic_cardinality_policy` defines whether one subject may hold multiple active belief/suspicion values for the same predicate + arguments + temporal scope. It does not change objective Fact semantics.
 
 ---
 
@@ -1430,6 +1436,40 @@ EvidenceRelation
 ```
 
 No automatic Bayesian/logical inference is implied.
+
+---
+
+# 40A. InformationClassification
+
+Secret/access classification is modeled separately from Fact/Knowledge/Belief truth semantics.
+
+```
+InformationClassification
+  classification_id
+
+  subject_ref:
+    PropositionKey
+    | EvidenceRef
+    | EntityInformationRef
+    | NarrativeThreadRef
+
+  policy_ref
+
+  status:
+    ACTIVE
+    RELEASED
+    REVOKED
+
+  optional changed_by_event_ref
+```
+
+## Rules
+
+- InformationClassification does not itself create or remove KnowledgeRecord.
+- PlayerInteractionView visibility is derived from epistemics + permissions + applicable classification policy.
+- Static classification definitions/policies may live in the CompiledScenarioBundle.
+- Runtime release/reclassification becomes canonical only when it can affect future rules/views.
+- Secret is not a Fact type and is not represented by falsifying/removing truth.
 
 ---
 
@@ -1822,6 +1862,7 @@ Commercial/account lifecycle remains outside this state machine.
 27. BoundaryOrderingPolicy resolves due-effect/action ordering.
 28. Progression has deterministic candidate selection and bounded convergence.
 29. Progression non-convergence aborts before canonical commit.
+30. A terminal Session/Ending transition cannot commit while retaining an OPEN ResolutionWindow or ACCEPTING WindowInputGate; the same frontier operation must resolve/cancel/interrupt/close them according to policy.
 
 ## Random/numeric
 
@@ -1939,6 +1980,9 @@ Added:
 - explicit durable ownership of session_seed;
 - revision-0 bootstrap reconstruction rule;
 - explicit prohibition on hidden/random/external bootstrap state;
+- PredicateDefinition epistemic cardinality policy;
+- InformationClassification contract for Secret/access semantics;
+- terminal Session/Ending vs active Window/input-gate consistency invariant;
 - bootstrap/replay invariants.
 
 All other accepted Domain Contracts v0.2 semantics remain unchanged unless explicitly restated here.
