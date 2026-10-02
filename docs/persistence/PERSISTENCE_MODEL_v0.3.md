@@ -370,6 +370,33 @@ No-op commands create no transition row.
 
 ---
 
+# 10A. Event and batch hash formulas
+
+For persistence verification:
+
+```
+canonical_event_hash =
+  H(canonical_event_bytes)
+```
+
+```
+event_batch_hash =
+  H(
+    canonical(
+      OrderedList<CanonicalEventContent>
+      sorted by batch_index
+    )
+  )
+```
+
+Do not compute a batch hash by raw concatenation of variable-length hashes/byte strings without canonical framing.
+
+The hash algorithm and canonicalization version come from the pinned MechanicsVersionManifest.
+
+CanonicalTransitionRecord.event_batch_hash must equal the recomputed ordered batch hash.
+
+---
+
 # 11. command_processing
 
 Durable command idempotency/resume record.
