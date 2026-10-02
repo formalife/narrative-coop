@@ -1,8 +1,8 @@
 # IMPLEMENTATION PLATFORM BASELINE v0.3
 
-**Status:** PROPOSED  
+**Status:** ACCEPTED  
 **Date:** 2026-10-02  
-**Supersedes as working proposal:** IMPLEMENTATION_PLATFORM_v0.2  
+**Supersedes:** IMPLEMENTATION_PLATFORM_v0.2  
 **Governing architecture:** Architecture Baseline v0.3 — ACCEPTED  
 **Governing persistence:** Persistence Data Model v0.3 — ACCEPTED  
 **Governing schema:** PostgreSQL Schema v0.5 — ACCEPTED
@@ -839,3 +839,19 @@ After acceptance, and before implementation code:
 - create additive access-schema design/DDL proposal and red-team it.
 
 Only then generate executable migrations and implementation skeleton.
+
+
+---
+
+# Acceptance record
+
+Implementation Platform Baseline v0.3 was explicitly accepted on 2026-10-02 together with ADR-015, ADR-016 and ADR-017.
+
+Binding implementation-platform decisions:
+- Supabase: PostgreSQL 17 + Auth + private Realtime.
+- Railway: separate persistent engine-api and engine-worker.
+- custom least-privilege PostgreSQL LOGIN role per service.
+- AuthSubject != ParticipantRef != CharacterEntityId.
+- internal access schema for operational authorization/invites.
+- PostgreSQL Outbox remains durable work authority.
+- no Supabase secret/service-role key in normal API/worker runtime.
