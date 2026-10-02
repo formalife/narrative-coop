@@ -33,6 +33,8 @@ Credentials:
 - `engine_runtime_login` database credential;
 - public Supabase JWKS/project metadata.
 
+Normal JWT verification uses public signing metadata and does not require Supabase secret/admin credentials.
+
 No:
 - worker DB credential;
 - LLM/provider secret;
@@ -63,7 +65,9 @@ API and worker are separate Railway services from the same repository with servi
 Default:
 - Supabase shared session pooler (port 5432);
 - custom LOGIN role per service;
-- small application-side pools.
+- small application-side pools;
+- Supabase DB SSL enforcement enabled;
+- certificate/hostname verification (`verify-full` or driver equivalent).
 
 Direct connection remains an allowed tested optimization.
 
