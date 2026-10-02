@@ -1,6 +1,6 @@
 # ADR-015 — Guest Identity and Session Participation
 
-**Status:** PROPOSED  
+**Status:** ACCEPTED  
 **Date:** 2026-10-02
 
 ## Context
@@ -153,3 +153,10 @@ Revisit if:
 - multi-device/multi-controller participation becomes a product feature;
 - Supabase Auth is replaced;
 - one human controlling multiple roles becomes an intentional game mode.
+
+
+---
+
+## Acceptance record
+
+Explicitly accepted on 2026-10-02 as part of Implementation Platform Baseline v0.3.
