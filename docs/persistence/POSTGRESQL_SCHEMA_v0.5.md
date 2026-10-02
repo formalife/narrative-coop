@@ -1,8 +1,8 @@
 # POSTGRESQL SCHEMA v0.5
 
-**Status:** PROPOSED  
+**Status:** ACCEPTED  
 **Date:** 2026-10-02  
-**Supersedes as working proposal:** POSTGRESQL_SCHEMA_v0.4  
+**Supersedes:** POSTGRESQL_SCHEMA_v0.4  
 **Governing architecture:** Architecture Baseline v0.3 — ACCEPTED  
 **Governing contracts:** Domain Contracts v0.3 — ACCEPTED  
 **Governing domain model:** Domain Model v0.2 — ACCEPTED  
@@ -2141,3 +2141,18 @@ PostgreSQL Schema v0.5 adds:
 - bootstrap-first migration ordering.
 
 No higher-level architecture/domain/persistence decision changes.
+
+
+---
+
+# 51. Acceptance record
+
+PostgreSQL Schema v0.5 was explicitly accepted on 2026-10-02.
+
+Acceptance evidence:
+- `RED_TEAM_POSTGRESQL_SCHEMA_v0.5.md`
+- postmortems v0.1 through v0.4.
+
+This is now the binding concrete schema baseline.
+
+Executable migrations remain gated on the implementation-platform decisions recorded in PROJECT_STATE: target PostgreSQL/provider, runtime/worker role mapping, guest identity/participation, and exposed-schema/RLS strategy.
