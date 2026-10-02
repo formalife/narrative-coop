@@ -1,9 +1,9 @@
 # PROJECT STATE
 
 **Project:** Narrative Co-op Engine  
-**Phase:** Phase 0 — Architecture Discovery  
-**Active working baseline:** v0.2 — PROPOSED  
-**Previous baseline:** v0.1 — historical proposal  
+**Phase:** Phase 0 — Architecture Discovery / Acceptance Review  
+**Active working baseline:** v0.3 — PROPOSED  
+**Previous baselines:** v0.1, v0.2 — historical proposals  
 **Implementation status:** NOT STARTED  
 **Last updated:** 2026-10-02
 
@@ -13,105 +13,136 @@ Two players inhabit the same world, receive asymmetric information, take asymmet
 
 ## Current status
 
-Architecture Baseline v0.1 has been red-teamed.
+v0.2 underwent a second-pass architecture review and postmortem.
 
-Canonical review:
+Canonical artifacts:
+
 - `docs/architecture/RED_TEAM_v0.1.md`
-
-Current working proposal:
 - `docs/architecture/ARCHITECTURE_BASELINE_v0.2.md`
+- `docs/architecture/POSTMORTEM_v0.2.md`
+- `docs/architecture/ARCHITECTURE_BASELINE_v0.3.md`
+
+### Verdict on v0.2
+
+**MODIFY.**
+
+v0.2 preserved the correct architectural center but was not accepted as the final Phase-0 baseline because it left material gaps in:
+
+- authoritative command/idempotency boundary;
+- canonical state behavior while a ResolutionWindow is open;
+- deterministic event hash scope/identity;
+- deterministic numeric semantics;
+- epistemic stance semantics;
+- Fact lifecycle;
+- canonical Scenario Progression versus presentation-only Narrative Direction;
+- reliable post-commit handoff;
+- causally relevant PresentationRecords;
+- pure rule execution;
+- historical build/replay compatibility.
+
+v0.3 addresses these issues.
 
 No architecture ADR is ACCEPTED yet.
 
-Chat discussion and PROPOSED baseline text are not binding decisions until explicitly accepted and promoted into ADRs.
+## Current v0.3 proposal
 
-## Material changes introduced in v0.2
+### Canonical progression
 
-- Split client `ActionSubmission` from server-derived `ExpandedAction`.
-- Claims, preconditions and canonical effects are derived from immutable ActionDefinitions, not authored by clients.
-- Action-family taxonomy no longer drives mechanics.
-- Claims gained explicit access modes.
-- Conflict Graph became a typed Interaction Graph.
-- Admission validity was separated from in-world ActionOutcome.
-- Simultaneous windows use set/snapshot semantics independent of network arrival order.
-- Resolver uses bounded, versioned strategies rather than an arbitrary scripting/constraint engine.
-- Canonical events use finite `event_family` + precise `event_code`.
-- Event visibility is no longer a generic event-envelope flag; epistemics are explicit canonical state.
-- Semantic Domain Events are separated from a typed State Mutation IR.
-- Randomness uses stable named draw scopes rather than sequential call position.
-- State/event hashes require canonical serialization.
-- CQRS distinguishes synchronous gameplay-critical projection from laggable secondary projections.
-- Narrative Director decisions affecting gameplay are deterministic/versioned; only realization wording may be noncanonical.
-- Wall-clock deadlines are triggers that create recorded events; historical replay never re-runs the historical clock.
-- Target addressability became an explicit domain/security invariant.
+- One canonical ordered event stream per Session.
+- Single Canonical Frontier: at most one canonical gameplay progression operation advances a Session at a time.
+- Simultaneous ResolutionWindows collect pending input against a fixed canonical base revision.
+- Logical scheduler/progression events do not independently mutate through an open simultaneous window.
+- Expected-revision concurrency is a safety check rather than the normal gameplay arbitration mechanism.
 
-## Current proposed architecture
+### Commands and input
 
-- Session is the runtime consistency boundary.
-- One ordered canonical event stream per Session.
-- Selective Event Sourcing for canonical session history only.
-- PostgreSQL remains the proposed primary persistence baseline.
-- CQRS is logical; no distributed read/write infrastructure by default.
-- Current SessionState is a synchronous rebuildable projection.
-- Componentized Entity Model rather than heavyweight ECS.
-- Immutable compiled Scenario Bundle.
-- Minimal client ActionSubmission → authoritative ExpandedAction.
-- Typed claims + Interaction Graph.
-- Deterministic bounded resolver strategies.
-- Semantic Domain Event + typed State Mutation IR.
-- Explicit Fact / Observation / Knowledge / Belief / Communication Claim semantics.
-- Separate engine order, logical time and wall clock.
-- Canonical Scheduler for logical delayed consequences.
-- Named seeded versioned randomness.
-- Deterministic Simulation and Narrative Director.
-- Optional/noncanonical Narrative Realization.
-- Version pinning + canonical hashes + state/resolver replay.
-- Browser cannot directly mutate canonical state.
-- LLM remains outside canonical state transitions.
+- All authoritative inputs enter through idempotent EngineCommands.
+- Authenticated/system principal is server-bound.
+- ActionSubmission is durable pending input, not canonical world truth.
+- Window freeze selects the final submission per ActionSlot.
 
-All items above remain PROPOSALS until accepted via ADR.
+### Actions and resolution
+
+- ActionDefinition remains scenario authority.
+- ExpandedAction is derived server-side.
+- Claims are typed and authoritative.
+- Interaction Graph/groups support contention, exclusion, interference, dependency, complementarity and order sensitivity.
+- Resolver remains deterministic and limited to bounded versioned strategies.
+
+### Progression and narrative
+
+- Scenario Progression is canonical and owns DecisionPoint/window/ending activation.
+- Narrative Direction is presentation-only.
+- Narrative Realization is noncanonical but exact delivered output is stored in immutable PresentationRecords because it can causally influence later human choices.
+
+### Events/state/replay
+
+- CanonicalEventContent is separated from operational EventRecordMetadata.
+- Semantic hashes exclude wall-clock/database metadata.
+- Event/action identities used by replay must be deterministic or stored historical inputs.
+- Semantic Domain Events remain separate from typed State Mutation IR.
+- Canonical numeric mechanics use integers/fixed-point/declared units, not unconstrained floating point.
+- Logical time uses deterministic integer representation.
+- Epistemics separates Proposition, Fact, Observation, KnowledgeRecord, BeliefRecord, SuspicionRecord and CommunicationClaim.
+- Normal Fact lifecycle ends/supersedes validity; it does not erase historical truth.
+- Named seeded randomness remains required.
+- State, resolver, forensic and narrative replay are distinguished.
+
+### Persistence/reliability
+
+- Selective Event Sourcing for canonical Session history.
+- PostgreSQL remains proposed primary persistence.
+- Logical CQRS with synchronous critical projection.
+- Transactional outbox provides durable post-commit handoff.
+- No broker/Redis/microservices required by baseline.
+
+All remain PROPOSALS until explicitly accepted and recorded via ADR.
 
 ## Immediate next work
 
-1. Review Architecture Baseline v0.2 with the user.
-2. Accept, modify or reject the structural decisions.
-3. Create/mark the corresponding ADRs only for decisions explicitly accepted.
-4. Produce an ACCEPTED Phase-0 architecture baseline or a v0.3 proposal if material corrections remain.
-5. Only after the governing contracts are accepted:
+1. Review/accept or amend Architecture Baseline v0.3.
+2. Promote accepted structural decisions into ADRs.
+3. Mark the accepted Phase-0 baseline.
+4. Only then design:
    - concrete domain/data model;
-   - event/action/mutation schemas;
-   - DB schema;
-   - repository implementation skeleton;
+   - command/action/event/mutation contracts;
+   - SQL schema;
+   - implementation monorepo skeleton;
    - resolver test harness;
    - tiny disposable technical micro-scenario.
 
-## Highest-priority decisions to freeze before implementation
+## Highest-priority ADRs after acceptance
 
-- Event Sourcing scope and Session consistency boundary.
-- ActionSubmission / ActionDefinition / ExpandedAction contract.
-- Claim + Interaction Graph model.
-- Resolver determinism and strategy boundary.
-- Domain Event envelope/taxonomy.
-- State Mutation IR boundary.
-- Epistemic model.
-- Temporal model.
-- Scenario bundle/versioning.
-- Replay/hashing contract.
-- Simulation / Director / Realization boundary.
+- ADR-001 Selective Event Sourcing scope.
+- ADR-002 Session stream + Single Canonical Frontier.
+- ADR-003 PostgreSQL persistence baseline.
+- ADR-004 Componentized Entity Model.
+- ADR-005 EngineCommand + ActionSubmission authority boundary.
+- ADR-006 Claim/Interaction/Resolver model.
+- ADR-007 Semantic Domain Event + State Mutation IR.
+- ADR-008 Epistemic model.
+- ADR-009 Temporal/Scheduler model.
+- ADR-010 Scenario compilation + pure deterministic rules.
+- ADR-011 Versioning, canonical serialization, hashing and replay.
+- ADR-012 Scenario Progression / Narrative Direction / Realization split.
+- ADR-013 Logical CQRS + synchronous critical projection + transactional outbox.
+- ADR-014 LLM runtime boundaries.
+- ADR-015 Guest identity/participation baseline (later, before implementation).
 
 ## Decisions intentionally not frozen
 
-- exact action-family/tag vocabulary;
-- exact claim-selector/path syntax;
-- exact Mutation IR target encoding;
-- exact PRNG;
+- exact Action tag vocabulary;
+- Claim selector syntax;
+- exact Mutation IR target representation;
+- exact fixed-point scales;
+- PRNG implementation;
 - final Scenario DSL syntax;
-- natural-language confirmation policy;
+- free-text action confirmation policy;
 - snapshot frequency;
-- concrete DB schema;
-- exact component schema representation;
+- SQL table/index design;
+- detailed relationship/goal/commitment structures;
 - Scenario Studio UI;
-- NPC agent implementation;
+- NPC agent architecture;
 - vector/graph databases;
 - Redis/Durable Objects;
 - microservices;
@@ -123,10 +154,10 @@ All items above remain PROPOSALS until accepted via ADR.
 
 GitHub is the canonical technical source of truth.
 
-When a structural decision is explicitly accepted:
-1. create/update its ADR;
-2. mark it ACCEPTED;
-3. update the active architecture baseline;
-4. update this PROJECT_STATE file.
-
 Never silently convert a PROPOSAL into a DECISION.
+
+When a structural decision is explicitly accepted:
+1. create/update ADR;
+2. mark ADR ACCEPTED;
+3. update active baseline status;
+4. update this PROJECT_STATE.
