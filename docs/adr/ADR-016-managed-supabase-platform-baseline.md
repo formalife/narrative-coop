@@ -1,6 +1,6 @@
 # ADR-016 — Supabase PostgreSQL / Auth / Realtime Platform Baseline
 
-**Status:** PROPOSED  
+**Status:** ACCEPTED  
 **Date:** 2026-10-02
 
 ## Context
@@ -127,3 +127,10 @@ Revisit if:
 - Supabase costs/limits materially diverge;
 - another managed PostgreSQL/Auth platform materially simplifies the stack;
 - Supabase constraints conflict with accepted PostgreSQL semantics.
+
+
+---
+
+## Acceptance record
+
+Explicitly accepted on 2026-10-02 as part of Implementation Platform Baseline v0.3.
