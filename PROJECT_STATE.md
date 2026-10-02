@@ -70,13 +70,23 @@ Historical review chain:
 Translate the accepted architecture into explicit contracts and invariants before writing production code.
 
 Current contract proposal:
-- `docs/domain/DOMAIN_CONTRACTS_v0.1.md` — PROPOSED
+- `docs/domain/DOMAIN_CONTRACTS_v0.2.md` — PROPOSED
 
-The next checkpoint is a red-team of these contracts against synthetic causal-merge/epistemic/temporal/reliability cases. Do not proceed to SQL schema until the contract boundary is sufficiently stable.
+Historical contract proposal:
+- `docs/domain/DOMAIN_CONTRACTS_v0.1.md`
+
+Contract postmortem:
+- `docs/domain/POSTMORTEM_DOMAIN_CONTRACTS_v0.1.md`
+
+v0.1 was NOT accepted. The postmortem found contract-level ambiguities around window freezing, input/deadline races, same-window dependencies, generic canonical transition ownership, canonical collection hashing, state-hash self-reference, dynamic propositions, progression convergence and presentation/mechanical separation.
+
+v0.2 addresses those findings without changing any ACCEPTED ADR.
+
+The next checkpoint is an acceptance review/red-team of DOMAIN_CONTRACTS_v0.2. Do not proceed to DOMAIN_MODEL or SQL schema until the contract boundary is accepted.
 
 Priority order:
 
-1. Define concrete domain contracts:
+1. Review and accept/amend concrete domain contracts:
    - EngineCommand;
    - ActionSubmission;
    - ActionDefinition;
