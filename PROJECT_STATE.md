@@ -166,3 +166,34 @@ If contract design reveals a conflict with an ACCEPTED ADR:
 2. stop treating the conflicting design as implementation detail;
 3. propose a superseding ADR;
 4. update baseline/project state only after explicit acceptance.
+
+
+## Persistence design checkpoint
+
+Persistence design has completed three iterations.
+
+Historical proposals:
+- `docs/persistence/PERSISTENCE_MODEL_v0.1.md` — NOT ACCEPTED
+- `docs/persistence/POSTMORTEM_PERSISTENCE_MODEL_v0.1.md`
+- `docs/persistence/PERSISTENCE_MODEL_v0.2.md` — NOT ACCEPTED
+- `docs/persistence/RED_TEAM_PERSISTENCE_MODEL_v0.2.md`
+
+Current proposal:
+- `docs/persistence/PERSISTENCE_MODEL_v0.3.md` — PROPOSED
+- `docs/persistence/RED_TEAM_PERSISTENCE_MODEL_v0.3.md` — READY FOR ACCEPTANCE
+
+v0.3 adds:
+- global DB lock hierarchy;
+- command-processing fencing generations;
+- outbox lease fencing generations;
+- ActionSubmission content hashes;
+- FrozenInputSet commitment to selected content hashes;
+- stable presentation generation/delivery identity;
+- fenced presentation result acceptance;
+- immutable asset identity;
+- event-index metadata repair semantics;
+- minimal session_runtime without duplicated canonical convenience fields.
+
+Persistence v0.3 is technically ready for acceptance.
+
+Do NOT create PostgreSQL migrations or implementation code until persistence v0.3 is explicitly accepted.
