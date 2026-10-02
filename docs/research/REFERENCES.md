@@ -104,3 +104,13 @@ For material architecture conclusions distinguish:
 - **INFERENCE** — conclusion drawn from facts.
 - **PROPOSAL** — suggested project design.
 - **DECISION** — only after explicit user acceptance and ADR recording.
+
+
+### Microsoft — Transactional Outbox pattern
+https://learn.microsoft.com/en-us/azure/architecture/databases/guide/transactional-out-box-cosmos
+
+FACT:
+The Transactional Outbox pattern persists business state changes and outgoing work/events atomically, then lets a separate worker publish/process the outbox. This avoids the failure window where the business transaction commits but the downstream notification/message is lost.
+
+PROJECT IMPLICATION:
+Canonical Session commit and required post-commit work should insert outbox records in the same PostgreSQL transaction. Consumers must be idempotent. A broker is not required for the MVP baseline.
