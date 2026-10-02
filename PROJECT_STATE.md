@@ -70,11 +70,8 @@ Historical review chain:
 Translate the accepted architecture into explicit contracts and invariants before writing production code.
 
 Accepted contract baseline:
-- `docs/domain/DOMAIN_CONTRACTS_v0.2.md` — ACCEPTED
-
-Proposed contract supersession:
-- `docs/domain/DOMAIN_CONTRACTS_v0.3.md` — PROPOSED
-- `docs/domain/RED_TEAM_DOMAIN_CONTRACTS_v0.3.md` — verdict READY FOR ACCEPTANCE
+- `docs/domain/DOMAIN_CONTRACTS_v0.3.md` — ACCEPTED
+- `docs/domain/DOMAIN_CONTRACTS_v0.2.md` — SUPERSEDED
 
 Historical contract proposal:
 - `docs/domain/DOMAIN_CONTRACTS_v0.1.md`
@@ -100,15 +97,15 @@ Historical model:
 - `docs/domain/DOMAIN_MODEL_v0.1.md` — NOT ACCEPTED
 - `docs/domain/POSTMORTEM_DOMAIN_MODEL_v0.1.md`
 
-Current model proposal:
-- `docs/domain/DOMAIN_MODEL_v0.2.md` — PROPOSED
-- `docs/domain/RED_TEAM_DOMAIN_MODEL_v0.2.md` — verdict READY FOR ACCEPTANCE AFTER Domain Contracts v0.3
+Accepted domain model:
+- `docs/domain/DOMAIN_MODEL_v0.2.md` — ACCEPTED
+- `docs/domain/RED_TEAM_DOMAIN_MODEL_v0.2.md` — PASS
 
 The Domain Model postmortem found additive contract gaps: durable Session seed/bootstrap ownership, explicit information classification/Secret contract, predicate epistemic cardinality and terminal ending/window consistency.
 
 No ACCEPTED ADR requires supersession.
 
-SQL/persistence design remains blocked until Domain Contracts v0.3 and Domain Model v0.2 are explicitly accepted.
+Persistence/Data Model design is now authorized. SQL migrations remain blocked until persistence design is red-teamed and accepted.
 
 Priority order:
 
@@ -131,11 +128,11 @@ Priority order:
    - Outbox item;
    - VersionManifest.
 
-2. Domain Contracts v0.3 — awaiting explicit acceptance.
+2. Domain Contracts v0.3 — ACCEPTED.
 
-3. Domain Model v0.2 — technically ready, awaiting v0.3 contract acceptance and explicit model acceptance.
+3. Domain Model v0.2 — ACCEPTED.
 
-4. Only then define persistence/data model and SQL schema/migration strategy.
+4. Define persistence/data model; red-team it; only then define SQL schema/migration strategy.
 
 5. Create implementation monorepo skeleton only after the contracts above are sufficiently stable.
 
