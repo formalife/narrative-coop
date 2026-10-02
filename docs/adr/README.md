@@ -28,9 +28,9 @@ This directory is the canonical registry for structural technical decisions.
 | [ADR-012](ADR-012-scenario-progression-narrative-separation.md) | Scenario Progression vs Narrative Direction/Realization | ACCEPTED |
 | [ADR-013](ADR-013-logical-cqrs-critical-projection-outbox.md) | Logical CQRS, critical projection and Transactional Outbox | ACCEPTED |
 | [ADR-014](ADR-014-llm-runtime-boundaries.md) | LLM runtime boundaries | ACCEPTED |
-| [ADR-015](ADR-015-guest-identity-session-participation.md) | Guest identity and Session participation | PROPOSED |
-| [ADR-016](ADR-016-managed-supabase-platform-baseline.md) | Supabase PostgreSQL / Auth / Realtime platform baseline | PROPOSED |
-| [ADR-017](ADR-017-persistent-api-worker-outbox.md) | Persistent API / Worker runtime and durable Outbox | PROPOSED |
+| [ADR-015](ADR-015-guest-identity-session-participation.md) | Guest identity and Session participation | ACCEPTED |
+| [ADR-016](ADR-016-managed-supabase-platform-baseline.md) | Supabase PostgreSQL / Auth / Realtime platform baseline | ACCEPTED |
+| [ADR-017](ADR-017-persistent-api-worker-outbox.md) | Persistent API / Worker runtime and durable Outbox | ACCEPTED |
 
 ## Governing baseline
 
