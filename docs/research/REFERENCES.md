@@ -151,3 +151,23 @@ PostgreSQL includes GIN operator classes for JSONB containment/path query patter
 
 PROJECT IMPLICATION:
 JSONB is viable for scenario-defined/current projection structures, but indexes should be added only for demonstrated query patterns rather than blanket-indexing all payloads.
+
+
+### PostgreSQL — Default Function Privileges
+https://www.postgresql.org/docs/current/sql-createfunction.html
+https://www.postgresql.org/docs/current/sql-alterdefaultprivileges.html
+
+FACT:
+PostgreSQL grants PUBLIC EXECUTE on newly created functions/procedures by default. The documentation recommends revoking that access when inappropriate, and notes that removing the global default PUBLIC EXECUTE requires changing the role's global default privileges rather than relying on a per-schema revoke.
+
+PROJECT IMPLICATION:
+Use a dedicated migration owner, revoke default PUBLIC EXECUTE for its future functions, and explicitly revoke sensitive function EXECUTE in the same migration transaction that creates the function.
+
+### PostgreSQL — Row Level Security
+https://www.postgresql.org/docs/current/ddl-rowsecurity.html
+
+FACT:
+When Row Level Security is enabled and no applicable policy exists, PostgreSQL uses default deny for normal row access. Table owners typically bypass RLS unless configured otherwise.
+
+PROJECT IMPLICATION:
+RLS can be defense-in-depth for future player-facing relations, but internal canonical-table safety must primarily come from schema exposure boundaries, SQL privileges and non-owner runtime roles. Participant-specific policies wait for the accepted identity model.
