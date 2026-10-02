@@ -1,8 +1,8 @@
 # PERSISTENCE DATA MODEL v0.3
 
-**Status:** PROPOSED  
+**Status:** ACCEPTED  
 **Date:** 2026-10-02  
-**Supersedes as working proposal:** PERSISTENCE_MODEL_v0.2  
+**Supersedes:** PERSISTENCE_MODEL_v0.2  
 **Governing architecture:** Architecture Baseline v0.3 — ACCEPTED  
 **Governing contracts:** Domain Contracts v0.3 — ACCEPTED  
 **Governing domain model:** Domain Model v0.2 — ACCEPTED  
@@ -1405,3 +1405,17 @@ Persistence Model v0.3 adds:
 - presentation-idempotent delivery semantics.
 
 No accepted architecture, contract or domain-model decision is changed.
+
+
+---
+
+# Acceptance record
+
+Persistence Data Model v0.3 was explicitly accepted on 2026-10-02.
+
+Acceptance evidence:
+- `RED_TEAM_PERSISTENCE_MODEL_v0.3.md`
+- `POSTMORTEM_PERSISTENCE_MODEL_v0.1.md`
+- `RED_TEAM_PERSISTENCE_MODEL_v0.2.md`
+
+This model now governs concrete PostgreSQL schema design. DDL may optimize representation but may not change accepted lock ordering, fencing, canonical-history authority, reconstruction, idempotency, or retention-class semantics.
