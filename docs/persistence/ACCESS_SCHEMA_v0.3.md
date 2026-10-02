@@ -1,8 +1,8 @@
 # ACCESS SCHEMA v0.3
 
-**Status:** PROPOSED  
+**Status:** ACCEPTED  
 **Date:** 2026-10-02  
-**Supersedes as working proposal:** ACCESS_SCHEMA_v0.2  
+**Supersedes:** ACCESS_SCHEMA_v0.2  
 **Governing architecture:** Architecture Baseline v0.4 — ACCEPTED  
 **Governing ADR:** ADR-015 — ACCEPTED  
 **Governing platform:** Implementation Platform v0.3 — ACCEPTED  
@@ -616,3 +616,19 @@ These facts are implementation assumptions and should be reverified during deplo
 24. provider migration away from UUID AuthSubject.
 
 No executable migrations before this gate passes.
+
+
+---
+
+# Acceptance record
+
+Access Schema v0.3 was explicitly accepted on 2026-10-02.
+
+Acceptance evidence:
+- `RED_TEAM_ACCESS_SCHEMA_v0.3.md`
+- `POSTMORTEM_ACCESS_SCHEMA_v0.1.md`
+- `POSTMORTEM_ACCESS_SCHEMA_v0.2.md`
+
+This schema is now the binding access-security persistence baseline.
+
+Executable migrations remain gated on the target Supabase/Railway integration spike.
