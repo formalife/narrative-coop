@@ -5,9 +5,9 @@
 
 ## Context
 
-The accepted architecture requires PostgreSQL, guest authentication, reliable private realtime invalidation and server-side TypeScript execution.
+The accepted architecture requires PostgreSQL, minimal guest authentication, private realtime invalidation and a small server-side TypeScript runtime.
 
-The project should minimize infrastructure during MVP without coupling canonical mechanics to a vendor SDK.
+The MVP should minimize infrastructure while keeping canonical mechanics/provider-independent SQL portable.
 
 ## Decision
 
@@ -17,81 +17,106 @@ Use managed Supabase as the MVP platform baseline for:
 - Auth;
 - Realtime;
 - Edge Functions;
-- managed pooler;
-- cron/Vault integration where needed.
+- managed database pooling;
+- Supabase-specific cron/Vault glue where needed.
 
-Target PostgreSQL major: **17**.
+Target PostgreSQL major:
+- **17**.
 
-Before executable migrations, record and test the project's exact deployed server version.
+Before executable migration sign-off:
+- query and record actual `show server_version`;
+- run the accepted DDL/integration suite on the actual project.
 
-### Internal schema
+### Repository boundary
 
-Keep authoritative `engine` schema out of Supabase Data API exposed schemas.
+Provider-neutral:
 
-Browser roles receive no direct USAGE/table grants.
+```
+db/migrations/
+```
+
+Supabase-specific:
+
+```
+platform/supabase/
+```
+
+Supabase-specific SQL/config may cover:
+- Realtime policies;
+- pg_cron/pg_net wakeups;
+- Vault integration;
+- provider role/bootstrap glue.
+
+It may not redefine engine canonical semantics.
+
+### Internal schemas
+
+Do not expose:
+- `engine`;
+- `access`.
+
+Browser roles get no direct USAGE/table grants.
 
 ### Realtime
 
-Use private Realtime Broadcast only as a notification/invalidation channel.
+Use private Broadcast for invalidation only.
 
-Do not expose canonical engine tables through Postgres Changes as the gameplay read model.
+Do not use engine table Postgres Changes as the gameplay read model.
 
 ### Portability
 
-Domain/resolver packages remain Supabase-independent.
+Domain/resolver packages do not import Supabase SDKs.
 
-Provider-specific code is isolated in platform adapters.
-
-Provider-neutral SQL remains canonical under `db/migrations/`.
+Database schema is ordinary PostgreSQL.
 
 ## Alternatives Considered
 
-1. Supabase managed platform.
-2. Separate managed PostgreSQL + auth provider + Node service.
-3. Cloudflare-centric stateful architecture.
-4. Self-host Supabase.
+1. Managed Supabase.
+2. Separate PostgreSQL + auth + persistent Node service.
+3. Cloudflare-centric stateful backend.
+4. Self-hosted Supabase.
 
 ## Why Rejected
 
 ### Separate providers
 
-Adds operations/integration complexity before demonstrated need.
+Adds integration/secrets/operations before measured need.
 
 ### Cloudflare-centric state
 
-Would compete with the accepted PostgreSQL Single Canonical Frontier and risks premature Durable Objects.
+Would introduce a second coordination/state model before PostgreSQL proves insufficient.
 
-### Self-host Supabase
+### Self-host
 
-Adds database/auth/realtime operations burden without current compliance/control requirement.
+Adds operational burden without present requirement.
 
 ## Consequences
 
 Benefits:
-- fewer providers;
-- native anonymous auth;
-- private realtime;
-- managed PostgreSQL 17;
-- local CLI/dev environment.
+- one operational platform for DB/Auth/Realtime/API;
+- anonymous Auth support;
+- private realtime authorization;
+- PG17 target;
+- local/dev tooling.
 
 Costs:
-- platform-specific auth/realtime glue;
-- serverless runtime/database pool constraints;
-- provider upgrade behavior must be monitored.
+- provider glue;
+- Edge/pooler constraints;
+- platform upgrade monitoring.
 
 ## Risks
 
-- vendor/platform outage;
+- vendor outage;
+- accidental schema exposure;
 - Edge runtime limits;
-- provider-specific schema/role restrictions;
-- Postgres major upgrades;
-- accidental Data API exposure.
+- provider role limitations;
+- major upgrade behavior.
 
 ## Revisit Conditions
 
 Revisit if:
-- Supabase runtime limits become material;
-- compliance/data-residency requirements change;
-- database/realtime cost/scale materially diverges;
-- platform constraints conflict with accepted PostgreSQL schema;
-- persistent backend becomes operationally simpler.
+- Supabase limits block representative scenarios;
+- compliance/data-residency needs change;
+- persistent backend becomes simpler;
+- costs materially diverge;
+- Supabase constraints conflict with accepted PostgreSQL invariants.
