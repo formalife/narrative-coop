@@ -171,3 +171,62 @@ When Row Level Security is enabled and no applicable policy exists, PostgreSQL u
 
 PROJECT IMPLICATION:
 RLS can be defense-in-depth for future player-facing relations, but internal canonical-table safety must primarily come from schema exposure boundaries, SQL privileges and non-owner runtime roles. Participant-specific policies wait for the accepted identity model.
+
+
+### Supabase Edge Functions — Default environment variables
+https://supabase.com/docs/guides/functions/secrets
+
+FACT:
+Hosted Supabase Edge Functions receive project defaults including SUPABASE_DB_URL and SUPABASE_SECRET_KEYS; secret keys bypass RLS.
+
+PROJECT IMPLICATION:
+Do not use hosted Edge Functions as the authoritative engine runtime when service-specific least-privilege credentials are a required boundary.
+
+### Supabase — Database connections and custom roles
+https://supabase.com/docs/guides/database/connecting-to-postgres
+https://supabase.com/docs/guides/troubleshooting/fatal-password-authentication-failed
+
+FACT:
+Persistent backends can use direct or session-mode connections. Custom PostgreSQL LOGIN roles work through direct and shared Supavisor pooler connections.
+
+PROJECT IMPLICATION:
+engine-api and engine-worker can use distinct custom LOGIN roles without sharing the default postgres credential.
+
+### Supabase — PostgreSQL SSL enforcement
+https://supabase.com/docs/guides/platform/ssl-enforcement
+
+FACT:
+Supabase can enforce SSL for PostgreSQL/pooler connections and supports verify-full certificate/hostname verification.
+
+PROJECT IMPLICATION:
+Cross-provider Railway -> Supabase database traffic must use enforced SSL plus server identity verification.
+
+### Supabase Auth — JWT/JWKS verification
+https://supabase.com/docs/guides/auth/jwts
+https://supabase.com/docs/reference/javascript/auth-getclaims
+
+FACT:
+Supabase Auth exposes public JWKS for asymmetric access-token signature verification.
+
+PROJECT IMPLICATION:
+The engine API can validate normal user JWTs without holding a Supabase secret/service-role key.
+
+### Supabase Realtime — Database Broadcast
+https://supabase.com/docs/guides/realtime/broadcast
+
+FACT:
+PostgreSQL can emit private Supabase Realtime Broadcast messages using realtime.send.
+
+PROJECT IMPLICATION:
+A narrow database wrapper can let engine-worker send content-free Session invalidations without a broad Supabase API secret.
+
+### Railway — Services and service-scoped variables
+https://docs.railway.com/overview/the-basics
+https://docs.railway.com/variables
+https://docs.railway.com/guides/cron-workers-queues
+
+FACT:
+Railway supports separate long-running services, service-scoped variables and continuous worker services.
+
+PROJECT IMPLICATION:
+Run engine-api and engine-worker as separate persistent services so DB and presentation-provider credentials remain scoped by process.
