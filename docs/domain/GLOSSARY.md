@@ -202,3 +202,18 @@
 **Presentation Task Identity** — stable presentation_id/dedup identity used across async generation and delivery retries.
 
 **Delivery Guard** — check preventing a presentation built for a superseded PlayerInteractionView from being delivered as current gameplay.
+
+
+## PostgreSQL schema additions — v0.5
+
+**Canonical Event Bytes** — immutable application-canonical serialized Domain Event content stored in PostgreSQL BYTEA; event index columns are non-authoritative.
+
+**Presentation Hash Framing** — explicit canonical object whose hash identifies a PlayerInteractionView, PresentationPlan, or rendered presentation artifact.
+
+**Composite Context FK** — relational foreign key that validates not merely that an artifact exists, but that it belongs to the same Session/audience/view/hash context.
+
+**Presentation Lifecycle Trigger** — narrow PostgreSQL trigger enforcing persistence immutability/state transitions of PresentationRecord without implementing narrative/game logic.
+
+**Migration Owner** — dedicated database role owning DDL/functions; never used as normal application runtime credentials.
+
+**Provider-neutral Migration Archive** — canonical GitHub SQL migration path under `db/migrations/`, independent from a particular hosting provider's CLI layout.
