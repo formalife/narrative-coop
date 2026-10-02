@@ -89,7 +89,9 @@ Default for Railway services:
 - Supabase shared pooler;
 - **session mode** on port 5432;
 - custom PostgreSQL LOGIN role per service;
-- small bounded application-side connection pool.
+- small bounded application-side connection pool;
+- Supabase PostgreSQL SSL enforcement enabled;
+- client connection uses certificate verification (`sslmode=verify-full` or driver equivalent) with the project/server CA.
 
 Reasons:
 
@@ -201,15 +203,26 @@ For a project using asymmetric Auth signing keys:
 
 Use a maintained JWT library rather than custom cryptography.
 
+Authentication fails closed when:
+- signature verification fails;
+- token is expired;
+- issuer/audience/required claims are invalid;
+- `sub` is absent;
+- signing key cannot be resolved after bounded JWKS refresh.
+
+Prefer asymmetric Supabase Auth signing keys. If the target project is temporarily still on symmetric signing, live Auth-server validation may use the user JWT plus publishable key; no Supabase secret/admin key is required.
+
 ## Access revocation
 
-Immediate game-access revocation is controlled by:
+Immediate engine-access revocation is controlled by:
 
 `access.session_principal_bindings.status`.
 
 Therefore engine authorization does not require Auth-admin API calls in the command hot path.
 
-Auth JWT expiry/revocation behavior remains an upstream authentication concern.
+Any engine-managed account deletion/recovery flow must revoke relevant ACTIVE access bindings before or atomically with the operational identity change.
+
+Out-of-band Auth deletion may leave stale binding evidence, but a binding alone never authenticates a caller.
 
 ---
 
@@ -590,6 +603,7 @@ Do not freeze ORM.
 
 Required spike before implementation acceptance:
 
+- TLS `verify-full` connection through the selected Supabase connection path;
 - transaction commit/rollback;
 - `SELECT ... FOR UPDATE`;
 - `SKIP LOCKED`;
@@ -699,6 +713,8 @@ Realtime:
 - No private world/free text in telemetry by default.
 - Worker provider keys never available to player web/API unless explicitly necessary.
 - Railway service variables scoped by service; seal production values where possible.
+- Railway API/worker deployment environments MUST NOT contain Supabase secret/service-role keys or database owner/migration credentials.
+- PostgreSQL traffic uses SSL with server identity verification.
 
 ---
 
@@ -789,13 +805,15 @@ Before acceptance test the architecture against:
 15. Supabase Realtime private-topic RLS mistake;
 16. Supabase secret key accidentally added to Railway;
 17. session pooler custom-role authentication/password rotation;
-18. DB connection exhaustion;
-19. Railway/Supabase regions far apart;
-20. Railway outage;
-21. Supabase outage;
-22. provider migration away from Railway;
-23. provider migration away from Supabase Auth;
-24. canonical replay with both compute services absent.
+18. TLS certificate/hostname verification failure;
+19. DB connection exhaustion;
+20. Railway/Supabase regions far apart;
+21. Railway outage;
+22. Supabase outage;
+23. provider migration away from Railway;
+24. provider migration away from Supabase Auth;
+25. canonical replay with both compute services absent;
+26. forbidden broad Supabase secret accidentally injected into API/worker environment.
 
 ---
 
@@ -814,7 +832,9 @@ After acceptance, and before implementation code:
 - create Railway project/services configuration plan;
 - choose nearby Railway region;
 - perform DB custom-role/session-pooler spike;
-- verify JWKS authentication;
+- verify JWKS authentication and signing-key mode;
+- enable/test PostgreSQL SSL enforcement and verify-full;
+- audit API/worker environment for forbidden broad Supabase/database-owner secrets;
 - verify Realtime RLS/wrapper design;
 - create additive access-schema design/DDL proposal and red-team it.
 
