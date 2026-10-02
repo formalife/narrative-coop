@@ -2,7 +2,7 @@
 
 **Project:** Narrative Co-op Engine  
 **Architecture phase:** Phase 0 COMPLETE  
-**Accepted architecture baseline:** v0.5 — ACCEPTED  
+**Accepted architecture baseline:** v0.6 — ACCEPTED  
 **Current work:** Deployment Integration Validation  
 **Implementation status:** NOT STARTED  
 **Last updated:** 2026-10-02
@@ -13,10 +13,10 @@ Two players inhabit the same world, receive asymmetric information, take asymmet
 
 ## Accepted architecture
 
-Architecture Baseline v0.5 is the binding current architecture; v0.3 remains the accepted historical Phase-0 baseline.
+Architecture Baseline v0.6 is the binding current architecture; v0.3 remains the accepted historical Phase-0 baseline.
 
 Canonical baseline:
-- `docs/architecture/ARCHITECTURE_BASELINE_v0.5.md`
+- `docs/architecture/ARCHITECTURE_BASELINE_v0.6.md`
 
 Acceptance record:
 - `docs/architecture/PHASE_0_ACCEPTANCE.md`
@@ -116,7 +116,7 @@ Priority order:
 4. ADR-017 Persistent API / Worker Runtime and Durable Outbox — ACCEPTED.
 5. Access Schema v0.3 — ACCEPTED.
 6. Deployment Integration Spike v0.1 — PARTIAL / BLOCKED on Railway ownership scope.
-7. Supabase Realtime Private Integration v0.2 — PROPOSED / READY FOR ACCEPTANCE.
+7. Supabase Realtime Private Integration v0.2 — ACCEPTED.
 8. Resume Deployment Integration Spike v0.2 after Formalife Railway workspace becomes available; then complete TLS/JWT/concurrency/Realtime end-to-end tests.
 9. Only after those gates generate executable `db/migrations/`.
 8. Create implementation monorepo skeleton.
@@ -372,3 +372,21 @@ Pending deployment tests:
 - security advisors after provider SQL application.
 
 No executable production-ready migrations until this provider integration is explicitly accepted and the Railway cross-provider spike completes.
+
+
+## Manual deployment actions required
+
+Canonical checklist:
+- `docs/operations/DEPLOYMENT_READINESS_CHECKLIST_v0.1.md`
+
+Current manual blockers:
+
+1. Railway: create/expose a Formalife team workspace to the connected `formalife-personal` account with Member or Admin rights.
+2. Supabase Auth: enable Anonymous Sign-Ins on `narrative-coop-staging`.
+3. Supabase Auth: configure and enable CAPTCHA protection (Turnstile preferred).
+4. Supabase Realtime: disable Allow public access.
+5. Supabase Database: enable SSL Enforcement.
+
+After these are complete, ChatGPT can resume Deployment Integration Spike v0.2 and create/configure the staging Railway project/services through the connector.
+
+Do not send provider secrets through chat.
