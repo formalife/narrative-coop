@@ -230,3 +230,41 @@ Railway supports separate long-running services, service-scoped variables and co
 
 PROJECT IMPLICATION:
 Run engine-api and engine-worker as separate persistent services so DB and presentation-provider credentials remain scoped by process.
+
+
+### PostgreSQL — FOR SHARE access linearization
+https://www.postgresql.org/docs/17/explicit-locking.html
+https://www.postgresql.org/docs/current/applevel-consistency.html
+
+FACT:
+PostgreSQL FOR SHARE row locks block concurrent UPDATE/DELETE on the same row, while allowing compatible shared locks.
+
+PROJECT IMPLICATION:
+Short FOR SHARE locks on ACTIVE Session principal bindings can linearize authorized gameplay/private-read requests against binding revocation without serializing compatible reads.
+
+### PostgreSQL — transaction time vs wall-clock time
+https://www.postgresql.org/docs/current/functions-datetime.html
+
+FACT:
+CURRENT_TIMESTAMP/now()/transaction_timestamp represent transaction-start time, while clock_timestamp returns actual current wall-clock time.
+
+PROJECT IMPLICATION:
+Invite expiry after a lock wait must use an explicitly current wall-clock evaluation point rather than transaction-start time.
+
+### Supabase Auth — JWT subject identity
+https://supabase.com/docs/guides/auth/jwt-fields
+
+FACT:
+Supabase JWT `sub` is the user ID UUID.
+
+PROJECT IMPLICATION:
+The accepted Supabase access layer may store AuthSubject as PostgreSQL UUID without putting provider identity into canonical gameplay state.
+
+### Supabase Realtime — authorization cache
+https://supabase.com/docs/guides/realtime/authorization
+
+FACT:
+Private-channel authorization is evaluated on channel connection/subscription and refreshed when a new JWT is supplied; policy changes are not re-evaluated for every message.
+
+PROJECT IMPLICATION:
+Binding revocation cannot rely on Realtime for immediate access removal. Realtime must carry content-free invalidations only; authoritative PlayerView access is rechecked by the API.
