@@ -116,8 +116,9 @@ Priority order:
 4. ADR-017 Persistent API / Worker Runtime and Durable Outbox — ACCEPTED.
 5. Access Schema v0.3 — ACCEPTED.
 6. Deployment Integration Spike v0.1 — PARTIAL / BLOCKED on Railway ownership scope.
-7. Resume as v0.2 after Formalife Railway workspace becomes available; then complete TLS/JWT/concurrency/Realtime tests.
-8. Only after those gates generate executable `db/migrations/`.
+7. Supabase Realtime Private Integration v0.2 — PROPOSED / READY FOR ACCEPTANCE.
+8. Resume Deployment Integration Spike v0.2 after Formalife Railway workspace becomes available; then complete TLS/JWT/concurrency/Realtime end-to-end tests.
+9. Only after those gates generate executable `db/migrations/`.
 8. Create implementation monorepo skeleton.
 9. Build resolver/state-transition/property-based/replay test harness.
 10. Build the disposable technical micro-scenario before product UI/story implementation.
@@ -335,3 +336,39 @@ Decision:
 Executable production-ready migrations remain BLOCKED until deployment spike v0.2 completes the pending cross-provider tests.
 
 No accepted architecture/ADR/schema decision requires modification.
+
+
+## Supabase Realtime integration checkpoint
+
+Design chain:
+- `docs/platform/SUPABASE_REALTIME_PRIVATE_INTEGRATION_v0.1.md` — NOT ACCEPTED
+- `docs/platform/POSTMORTEM_SUPABASE_REALTIME_PRIVATE_INTEGRATION_v0.1.md`
+- `docs/platform/SUPABASE_REALTIME_PRIVATE_INTEGRATION_v0.2.md` — PROPOSED
+- `docs/platform/POSTMORTEM_SUPABASE_REALTIME_PRIVATE_INTEGRATION_v0.2.md` — READY FOR ACCEPTANCE
+
+v0.2 corrections:
+- Realtime authorization reads `realtime.topic()`.
+- Browser roles receive no access-schema privileges.
+- Provider helper lives in private `platform_supabase` schema.
+- AuthSubject is derived internally from `auth.uid()`.
+- Broadcast-only receive policy; no normal client send policy.
+- Worker sender wrapper accepts only SessionId and constructs fixed private invalidation.
+- Realtime public access must be disabled at deployment.
+
+Verified on real Supabase staging target:
+- `realtime.topic()` and `auth.uid()` implementation shape;
+- helper fail-closed behavior for unauthenticated/malformed/wrong/revoked cases;
+- ACTIVE matching binding returns true;
+- sender wrapper grant shape;
+- PUBLIC cannot execute sender wrapper;
+- wrapper successfully reaches `realtime.send`.
+
+Pending deployment tests:
+- exact worker LOGIN execution;
+- actual Realtime policy installation;
+- anonymous Auth/JWT end-to-end;
+- private WebSocket join;
+- public access setting OFF;
+- security advisors after provider SQL application.
+
+No executable production-ready migrations until this provider integration is explicitly accepted and the Railway cross-provider spike completes.
