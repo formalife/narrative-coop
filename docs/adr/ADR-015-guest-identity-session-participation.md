@@ -5,19 +5,24 @@
 
 ## Context
 
-The MVP must support two-player guest play without mandatory PII while preserving a strict separation between external authentication identity and canonical gameplay identity.
+The MVP must support two-player guest play without mandatory PII while preserving a strict separation between authentication identity and canonical gameplay identity.
 
-The accepted Domain Model already distinguishes canonical ParticipantRef/Character state from account identity, but the runtime still needs a durable way to authorize an authenticated browser to act for one ParticipantRef.
+Anonymous guest access also introduces:
+- invite-claim races;
+- abuse;
+- stale/deleted auth subjects;
+- device-loss limitations;
+- cleanup/retention concerns.
 
-Anonymous guest access also introduces invite-claim, abuse, recovery and privacy concerns.
+The accepted Domain Model already separates ParticipantRef from account identity. The implementation platform must now define the operational authorization boundary without putting provider identity into canon.
 
 ## Decision
 
 Use three distinct identities:
 
-1. **AuthSubject** — external Supabase Auth subject/JWT user id; operational security identity.
+1. **AuthSubject** — Supabase Auth JWT subject/user id. Operational security identity.
 2. **ParticipantRef** — opaque internal gameplay participant identity used by canonical ParticipationState.
-3. **CharacterEntityId** — canonical in-world Character identity.
+3. **CharacterEntityId** — canonical in-world character identity.
 
 Invariant:
 
@@ -25,108 +30,126 @@ Invariant:
 AuthSubject != ParticipantRef != CharacterEntityId
 ```
 
-### Guest authentication
+### Anonymous guest authentication
 
-Use Supabase anonymous sign-in for MVP guest play.
+Use Supabase anonymous sign-in for first-play guests.
 
+Requirements:
+- Turnstile/CAPTCHA enabled;
 - no mandatory email/name/phone;
-- CAPTCHA/Turnstile required for anonymous account creation;
-- rate-limit Session creation/invite claims;
-- anonymous identity may later link a permanent authentication method.
+- application quotas on Session/invite operations;
+- anonymous users may later link a permanent identity.
 
-### Access binding
+### Internal access schema
 
-Persist a noncanonical internal mapping:
+Persist noncanonical authorization state in internal `access` schema:
+
+- `access.session_principal_bindings`;
+- `access.session_invites`.
+
+Neither table is canonical world state or browser-exposed.
+
+### Session principal binding
+
+An ACTIVE binding maps:
 
 ```
-session_principal_bindings
-  session_id
-  participant_ref
-  auth_subject
-  binding_status
-  created_at
-  optional revoked_at
+(session_id, auth_subject) -> participant_ref
 ```
 
-This relation is security authority for who may authenticate as a ParticipantRef.
+MVP uniqueness:
 
-It is not canonical world state.
+- one ACTIVE AuthSubject controls at most one ParticipantRef per Session;
+- one ParticipantRef has at most one ACTIVE AuthSubject.
 
-### Atomic participant claim
+Authorization always starts from a valid verified JWT and then resolves the binding.
 
-Initial binding of an AuthSubject to a ParticipantRef and the corresponding canonical ParticipantBound transition must commit atomically in PostgreSQL.
+No hard FK to Supabase `auth.users`.
 
-No AuthSubject is stored in canonical gameplay state/hash.
+### Atomicity
+
+Initial access binding and the matching canonical ParticipantBound transition must commit atomically.
+
+Preferred creator Session transaction may create revision-0 bootstrap and revision-1 ParticipantBound in the same PostgreSQL transaction.
 
 ### Invitations
 
-Guest partner invitations use a high-entropy one-time bearer token:
+Use one-time high-entropy bearer invite:
 
 - 256 random bits;
-- only token hash stored;
+- cryptographic hash stored;
+- token hash unique;
 - expiration required;
-- single claim;
-- raw token never logged.
+- terminal CLAIMED/REVOKED/EXPIRED states;
+- at most one ACTIVE invite per target participant slot by default;
+- raw token excluded from logs/analytics.
 
-Prefer invite token in SPA URL fragment and exchange it over HTTPS.
+Prefer raw token in SPA URL fragment and scrub it immediately after reading.
+
+### Cleanup
+
+Do not delete an anonymous AuthSubject while it has an ACTIVE binding to a nonterminal/recoverable Session.
+
+Anonymous cleanup begins only after retention policy is accepted.
 
 ### Recovery
 
-MVP does not promise anonymous identity recovery after:
-- browser storage deletion;
+MVP does not promise access recovery after:
 - sign-out;
+- browser storage deletion;
 - device switch.
 
-Players may later link a permanent auth method.
+Supported upgrade path is linking a permanent identity to the current anonymous user.
 
-Cross-device/rebind recovery is a future explicit access workflow, not a canonical Character rewrite.
+Merging/rebinding to a different existing account is future explicit access-recovery work and does not rewrite canonical character history.
 
 ## Alternatives Considered
 
-1. Use Auth user id directly as ParticipantRef.
-2. Require permanent account/email before play.
-3. Use only invite bearer tokens without authenticated users.
-4. Anonymous AuthSubject + separate ParticipantRef binding.
+1. Auth user id directly as ParticipantRef.
+2. Mandatory permanent accounts.
+3. Invite bearer token without authenticated user.
+4. Anonymous Auth + separate operational binding.
 
 ## Why Rejected
 
 ### Auth id as ParticipantRef
 
-Leaks provider/account identity into canonical gameplay and makes later auth migration/account linking harder.
+Provider identity leaks into canonical gameplay and complicates provider migration/auth merging.
 
-### Mandatory account
+### Mandatory accounts
 
-Adds friction and PII before demonstrated product need.
+Adds PII/friction before demonstrated need.
 
-### Bearer token only
+### Bearer-only authorization
 
-Weakens resumable authorization/session security and makes access revocation/device state harder to manage.
+Weakens durable authorization, revocation and resume semantics.
 
 ## Consequences
 
 Benefits:
 - minimal PII;
-- canonical game identity remains provider-independent;
-- Auth upgrade does not rewrite gameplay history;
-- invite claims can be transactional and auditable.
+- canonical identity remains provider-independent;
+- permanent identity linking does not rewrite gameplay;
+- one-Session/one-role default is enforceable.
 
 Costs:
-- requires operational access-binding tables;
-- anonymous-user cleanup policy;
-- guest device-loss limitation.
+- new operational `access` schema;
+- anonymous cleanup policy;
+- no initial cross-device recovery.
 
 ## Risks
 
-- anonymous account abuse;
-- invite token leakage;
-- stale access bindings after auth deletion;
-- accidental authorization using only "authenticated" status;
-- user confusion after clearing browser data.
+- anonymous-account abuse;
+- invite leakage;
+- stale bindings;
+- overly broad "authenticated" authorization;
+- guest access loss after local credential loss.
 
 ## Revisit Conditions
 
 Revisit if:
-- cross-device guest recovery becomes a key conversion/retention issue;
-- permanent accounts become mandatory;
+- cross-device recovery becomes material;
+- accounts become mandatory;
+- multi-device/multi-controller participation becomes a product feature;
 - Supabase Auth is replaced;
-- multi-participant/multi-device control becomes a product feature.
+- one human controlling multiple roles becomes an intentional game mode.
