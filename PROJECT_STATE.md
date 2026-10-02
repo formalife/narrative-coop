@@ -197,3 +197,46 @@ v0.3 adds:
 Persistence v0.3 was explicitly ACCEPTED on 2026-10-02.
 
 Concrete PostgreSQL schema design is now authorized. Actual migration files remain blocked until the schema proposal is red-teamed and accepted.
+
+
+## PostgreSQL schema checkpoint
+
+Persistence Data Model v0.3 is ACCEPTED.
+
+Schema design review chain:
+
+- `docs/persistence/POSTGRESQL_SCHEMA_v0.1.md` — NOT ACCEPTED
+- `docs/persistence/POSTMORTEM_POSTGRESQL_SCHEMA_v0.1.md`
+- `docs/persistence/POSTGRESQL_SCHEMA_v0.2.md` — NOT ACCEPTED
+- `docs/persistence/POSTMORTEM_POSTGRESQL_SCHEMA_v0.2.md`
+- `docs/persistence/POSTGRESQL_SCHEMA_v0.3.md` — NOT ACCEPTED
+- `docs/persistence/POSTMORTEM_POSTGRESQL_SCHEMA_v0.3.md`
+- `docs/persistence/POSTGRESQL_SCHEMA_v0.4.md` — NOT ACCEPTED
+- `docs/persistence/POSTMORTEM_POSTGRESQL_SCHEMA_v0.4.md`
+- `docs/persistence/POSTGRESQL_SCHEMA_v0.5.md` — PROPOSED
+- `docs/persistence/RED_TEAM_POSTGRESQL_SCHEMA_v0.5.md` — READY FOR ACCEPTANCE
+
+Key v0.5 corrections include:
+
+- atomic PlayerInteractionView + PENDING PresentationRecord + BUILD Outbox handoff;
+- explicit complete hash framing for PlayerView/Plan/output;
+- composite Plan -> Presentation integrity;
+- composite Outbox -> Presentation/PlayerView/GenerationContext integrity;
+- DB-enforced PresentationRecord lifecycle immutability;
+- correct PostgreSQL PUBLIC function-EXECUTE default handling;
+- provider-neutral `db/migrations/` archive;
+- logical DB privilege classes and migration bootstrap ordering.
+
+No accepted ADR, Domain Contract, Domain Model or Persistence Model requires supersession.
+
+### Migration implementation remains blocked
+
+Even after schema acceptance, executable production migrations are not considered implementation-ready until the project freezes/tests:
+
+1. target PostgreSQL major;
+2. hosting/provider;
+3. runtime/worker/migration role mapping;
+4. ADR-015 guest identity/participation;
+5. exposed-schema/RLS strategy.
+
+Do not create production migration files before those implementation-platform decisions are sufficiently defined.
