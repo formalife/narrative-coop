@@ -34,7 +34,7 @@ Initial preference:
 
 Do not use PostgREST/supabase-js as the canonical multi-row transaction engine.
 
-Do not freeze the query-builder until lock/fencing integration tests pass.
+Do not freeze the query-builder until an integration spike proves explicit transactions, row locking, deferred constraints, accepted lock ordering, and fencing through the deployed transaction pooler.
 
 ### Outbox worker
 
@@ -44,10 +44,12 @@ The durable authority is `engine.outbox`.
 
 Two wakeup paths are allowed:
 
-1. best-effort immediate `EdgeRuntime.waitUntil` drain after relevant API work;
+1. best-effort immediate `EdgeRuntime.waitUntil` request to the separate worker after relevant API work;
 2. periodic pg_cron/pg_net recovery sweep, initially proposed every 10 seconds.
 
 Either wakeup may fail without losing work.
+
+The API and worker use separate database roles. The API does not receive worker database credentials. Worker invocation uses a narrow internal invocation credential that is distinct from database credentials and broad platform-admin credentials.
 
 ### Concurrency
 
@@ -97,7 +99,7 @@ Costs:
 - pooler/driver transaction incompatibility;
 - missed cron wakeup causing latency;
 - duplicate external provider calls after ambiguous failures;
-- internal worker endpoint authentication mistakes.
+- worker invocation authorization mistakes.
 
 ## Revisit Conditions
 
