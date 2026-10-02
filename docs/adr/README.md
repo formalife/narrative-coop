@@ -7,16 +7,16 @@ This directory is the canonical registry for structural technical decisions.
 - **PROPOSED** — under discussion; not binding.
 - **ACCEPTED** — binding current decision.
 - **SUPERSEDED** — replaced by a later ADR.
-- **DEPRECATED** — retained historically but no longer recommended/current.
-- **REJECTED** — considered and explicitly not selected.
+- **DEPRECATED** — historical but no longer recommended/current.
+- **REJECTED** — explicitly considered and not selected.
 
-A proposal discussed in ChatGPT is **not** an accepted decision until its ADR is accepted and the active architecture baseline/project state are updated.
+A proposal in ChatGPT or an Architecture Baseline does not become binding until its decision is explicitly accepted and recorded.
 
 ## Required ADR structure
 
 Use [ADR-TEMPLATE.md](ADR-TEMPLATE.md).
 
-Each ADR should cover:
+Each ADR covers:
 
 1. Context
 2. Decision
@@ -26,27 +26,28 @@ Each ADR should cover:
 6. Risks
 7. Revisit conditions
 
-## Candidate ADRs from Architecture Baseline v0.1
+## Current candidate ADR set — Baseline v0.3
 
-The following are **candidates only**. They are not accepted merely because they appear here.
+All candidates remain **PROPOSED**.
 
 | ID | Topic | Status |
 |---|---|---|
-| ADR-001 | Event Sourcing scope | PROPOSED |
-| ADR-002 | Session aggregate and single canonical event stream | PROPOSED |
-| ADR-003 | Primary persistence / PostgreSQL | PROPOSED |
+| ADR-001 | Selective Event Sourcing scope | PROPOSED |
+| ADR-002 | Session stream and Single Canonical Frontier | PROPOSED |
+| ADR-003 | PostgreSQL persistence baseline | PROPOSED |
 | ADR-004 | Componentized Entity Model | PROPOSED |
-| ADR-005 | Semantic Action Model | PROPOSED |
-| ADR-006 | Claim-based conflict resolution | PROPOSED |
-| ADR-007 | LLM boundaries | PROPOSED |
-| ADR-008 | Fact / Observation / Knowledge / Belief separation | PROPOSED |
-| ADR-009 | Temporal model | PROPOSED |
-| ADR-010 | Scenario source and compiled bundle | PROPOSED |
-| ADR-011 | Version pinning | PROPOSED |
-| ADR-012 | Replay and state hashing | PROPOSED |
-| ADR-013 | Backend/database baseline | PROPOSED |
-| ADR-014 | Logical CQRS | PROPOSED |
-| ADR-015 | Guest/anonymous participation model | PROPOSED |
-| ADR-016 | Simulation / Director / Realization separation | PROPOSED |
+| ADR-005 | EngineCommand and ActionSubmission authority boundary | PROPOSED |
+| ADR-006 | Claims, Interaction Graph and deterministic resolver | PROPOSED |
+| ADR-007 | Semantic Domain Event and State Mutation IR | PROPOSED |
+| ADR-008 | Epistemic model | PROPOSED |
+| ADR-009 | Temporal and Scheduler model | PROPOSED |
+| ADR-010 | Compiled Scenario Bundle and pure rules | PROPOSED |
+| ADR-011 | Versioning, canonical serialization, hashing and replay | PROPOSED |
+| ADR-012 | Scenario Progression vs Narrative Direction/Realization | PROPOSED |
+| ADR-013 | Logical CQRS, critical projection and Transactional Outbox | PROPOSED |
+| ADR-014 | LLM runtime boundaries | PROPOSED |
+| ADR-015 | Guest identity / participation baseline | PROPOSED |
 
-Do not create all ADRs mechanically. Create an ADR when the decision has been sufficiently analyzed to be accepted, rejected, or deliberately recorded.
+Do not create/accept all ADRs mechanically.
+
+Create the individual ADR when its decision is being explicitly accepted, rejected or superseded.
