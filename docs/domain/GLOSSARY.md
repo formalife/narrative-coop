@@ -119,3 +119,44 @@
 **Forensic Replay** — reconstruct/investigate a historical Session using stored resolution/random/event/presentation evidence when old executable runtime is unavailable.
 
 **Narrative Replay** — display exact historical PresentationRecords rather than regenerating output.
+
+
+## Contract-design additions — Domain Contracts v0.2
+
+**CommandKey** — semantic idempotency identity for one logical EngineCommand across retries/duplicate delivery.
+
+**CommandProcessingRecord** — durable application record tracking command idempotency and resumable processing; not canonical world state.
+
+**CanonicalTransitionRecord** — generic immutable record owning one committed canonical event batch, regardless of whether the transition was caused by player resolution, progression, scheduler, lifecycle, deadline or compensation.
+
+**WindowInputGate** — durable authoritative pending-input gate for a ResolutionWindow; controls whether ActionSubmissions can still be accepted without itself being canonical world state.
+
+**SlotInputRevision** — compare-and-set revision for one ActionSlot's pending input.
+
+**FrozenInputSet** — immutable selected-submission snapshot captured when a ResolutionWindow stops accepting input.
+
+**ResolutionAttempt** — operational/audit state for resolver execution; PREPARING/FROZEN/RESOLVING-like phases are not canonical Window states.
+
+**Submission Eligibility** — condition that must hold for an input to be a valid attempt and cannot be enabled by another same-window action.
+
+**Resolution Requirement** — world/resource condition evaluated during joint resolution and allowed to be enabled, invalidated or transformed by other admitted actions.
+
+**CanonicalStateContent** — hashable canonical gameplay/progression state excluding projection metadata such as its own hash.
+
+**MechanicsVersionManifest** — Session-pinned versions required for mechanical replay.
+
+**PresentationGenerationContext** — immutable per-presentation versions/configuration used by presentation workers and retries.
+
+**PredicateDefinition** — Scenario Bundle definition of a predicate's argument/value/temporal schema.
+
+**PropositionValue** — immutable runtime statement value derived from a PredicateDefinition and runtime arguments/value.
+
+**PropositionKey** — deterministic content-derived identity of a PropositionValue.
+
+**BoundaryOrderingPolicy** — explicit rule defining the relative order of due scheduled effects and action resolution at a canonical frontier.
+
+**ProgressionEvaluation** — bounded deterministic repeated evaluation of Scenario Progression transitions until stable/ended or a step budget is exhausted.
+
+**PlayerInteractionView** — deterministic audience-safe projection containing both visible information and mechanically authorized interaction affordances before Narrative Direction.
+
+**InteractionSurface** — mechanically authorized action slots/action types/targets derived from current canonical and authorized pending-input state; Narrative Direction may not alter it.
