@@ -2,7 +2,7 @@
 
 **Project:** Narrative Co-op Engine  
 **Architecture phase:** Phase 0 COMPLETE  
-**Accepted architecture baseline:** v0.3 — ACCEPTED  
+**Accepted architecture baseline:** v0.4 — ACCEPTED  
 **Current work:** Implementation Platform Design  
 **Implementation status:** NOT STARTED  
 **Last updated:** 2026-10-02
@@ -13,10 +13,10 @@ Two players inhabit the same world, receive asymmetric information, take asymmet
 
 ## Accepted architecture
 
-Architecture Baseline v0.3 is the binding Phase-0 architecture.
+Architecture Baseline v0.4 is the binding current architecture; v0.3 remains the accepted historical Phase-0 baseline.
 
 Canonical baseline:
-- `docs/architecture/ARCHITECTURE_BASELINE_v0.3.md`
+- `docs/architecture/ARCHITECTURE_BASELINE_v0.4.md`
 
 Acceptance record:
 - `docs/architecture/PHASE_0_ACCEPTANCE.md`
@@ -42,12 +42,12 @@ Historical review chain:
 - ADR-012 — Scenario Progression / Narrative Direction / Realization Separation
 - ADR-013 — Logical CQRS / Critical Projection / Transactional Outbox
 - ADR-014 — LLM Runtime Boundaries
+- ADR-015 — Guest Identity and Session Participation
+- ADR-016 — Supabase PostgreSQL / Auth / Realtime Platform Baseline
+- ADR-017 — Persistent API / Worker Runtime and Durable Outbox Processing
 
 ## Still PROPOSED / not frozen
 
-- ADR-015 Guest identity / Session participation.
-- ADR-016 Supabase PostgreSQL / Auth / Realtime platform baseline.
-- ADR-017 Persistent API / Worker runtime and durable Outbox.
 - concrete `access` schema for principal bindings/invites.
 - exact Action tag/family vocabulary;
 - Claim selector syntax;
@@ -111,11 +111,11 @@ Domain Contracts v0.3, Domain Model v0.2, Persistence Data Model v0.3 and Postgr
 
 Priority order:
 
-1. Implementation Platform v0.3 — PROPOSED / READY FOR ACCEPTANCE.
-2. ADR-015 Guest Identity and Session Participation — PROPOSED.
-3. ADR-016 Supabase PostgreSQL / Auth / Realtime Platform — PROPOSED.
-4. ADR-017 Persistent API / Worker Runtime and Durable Outbox — PROPOSED.
-5. After acceptance, design/red-team the additive `access` schema.
+1. Implementation Platform v0.3 — ACCEPTED.
+2. ADR-015 Guest Identity and Session Participation — ACCEPTED.
+3. ADR-016 Supabase PostgreSQL / Auth / Realtime Platform — ACCEPTED.
+4. ADR-017 Persistent API / Worker Runtime and Durable Outbox — ACCEPTED.
+5. Design/red-team the additive `access` schema.
 6. Run Supabase/Railway connectivity, TLS, JWT, custom-role and Realtime integration spikes.
 7. Only after those gates generate executable `db/migrations/`.
 8. Create implementation monorepo skeleton.
@@ -236,8 +236,8 @@ Historical proposals:
 - `docs/architecture/POSTMORTEM_IMPLEMENTATION_PLATFORM_v0.2.md`
 
 Current proposal:
-- `docs/architecture/IMPLEMENTATION_PLATFORM_v0.3.md` — PROPOSED
-- `docs/architecture/RED_TEAM_IMPLEMENTATION_PLATFORM_v0.3.md` — READY FOR ACCEPTANCE
+- `docs/architecture/IMPLEMENTATION_PLATFORM_v0.3.md` — ACCEPTED
+- `docs/architecture/RED_TEAM_IMPLEMENTATION_PLATFORM_v0.3.md` — PASS
 
 Proposed topology:
 - Supabase: managed PostgreSQL 17 + Auth + private Realtime.
@@ -253,4 +253,4 @@ current Supabase Edge Functions receive broad default project DB/secret credenti
 
 No ACCEPTED ADR-001..014 or accepted domain/persistence/schema decision requires supersession.
 
-No executable migrations or implementation code until this platform checkpoint is explicitly accepted.
+Implementation Platform v0.3 and ADR-015..017 were explicitly ACCEPTED on 2026-10-02. Access-schema design is now authorized; executable migrations remain blocked until access schema and deployment spikes pass.
