@@ -160,3 +160,24 @@
 **PlayerInteractionView** — deterministic audience-safe projection containing both visible information and mechanically authorized interaction affordances before Narrative Direction.
 
 **InteractionSurface** — mechanically authorized action slots/action types/targets derived from current canonical and authorized pending-input state; Narrative Direction may not alter it.
+
+
+## Domain-model additions — v0.2
+
+**SessionGenesis** — immutable per-Session bootstrap record that owns deterministic revision-0 reconstruction metadata, including the Session RNG seed once Domain Contracts v0.3 is accepted.
+
+**ParticipationState** — canonical gameplay binding between participant slot, opaque participant reference, Character and Role; distinct from realtime connectivity.
+
+**PresenceState** — operational connection/presence information; not canonical gameplay state by itself.
+
+**SessionDerivedIndexes** — rebuildable lookup/acceleration structures excluded from canonical state hash.
+
+**InformationClassification** — Secret/access classification over a proposition/evidence/entity-information/thread reference; distinct from Fact or Knowledge.
+
+**GoalInstance** — canonical runtime instance of a GoalDefinition, storing only irreducible status/progress state.
+
+**CommitmentInstance** — mechanically established canonical obligation; proposals/offers are not automatically commitments.
+
+**NarrativeThreadInstance** — canonical runtime narrative-thread state only when rules consume it.
+
+**Predicate Epistemic Cardinality** — compiled policy such as SINGLE_VALUE or MULTI_HYPOTHESIS controlling allowed simultaneous active belief/suspicion values for one subject/scope.
